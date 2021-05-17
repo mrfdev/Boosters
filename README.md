@@ -22,4 +22,6 @@ But, I picked things back up again, updated it slightly so it works okay with 1.
 
 ## Other contributions
 
-A logic issue at 4 am showed up, and thankfully so did smeths, he pointed out it's the outdated if else conditional. Thank you for the help buddy.
+A logic issue showed up at 4 am, and thankfully so did smeths, he pointed out it was the if/else statements used for determining console output being flawed, it was showing twice due to it printing if the rate was not 1 and in an else after a check for if the rate was 1.
+
+Thank you for the help buddy. < edit from smeths; you're welcome, happy to help you floris :-D > <Hugs>
