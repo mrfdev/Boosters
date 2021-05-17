@@ -1,0 +1,14 @@
+name: mcMMOEvent
+version: 0.0.20
+api-version: 1.16
+main: com.mrfloris.mcmmoevent.mcMMOEvent
+authors: [mrfloris, anonymous, smeths]
+website: www.1moreblock.com
+description: Helper plugin for dealing with mcMMO boost events
+prefix: mcMMOEvent
+softdepend:
+    - mcMMO
+commands:
+    rate:
+        usage: "Usage: /<command>"
+        description: Displays the current mcMMO Boost event
