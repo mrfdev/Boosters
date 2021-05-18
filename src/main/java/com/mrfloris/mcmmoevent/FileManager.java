@@ -4,7 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.UnsupportedEncodingException;
+// import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -13,7 +14,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class FileManager {
 
     private final JavaPlugin plugin;
-    private HashMap<String, Config>    configs    = new HashMap<String, Config>();
+    private final HashMap<String, Config>    configs    = new HashMap<>();
 
     public FileManager(JavaPlugin plugin)
     {
@@ -36,7 +37,7 @@ public class FileManager {
 
     public class Config {
 
-        private String                        name;
+        private final String                        name;
         private File                            file;
         private YamlConfiguration    config;
 
@@ -82,17 +83,18 @@ public class FileManager {
             Reader defConfigStream;
             try
             {
-                defConfigStream = new InputStreamReader(plugin.getResource(this.name), "UTF8");
+                defConfigStream = new InputStreamReader(plugin.getResource(this.name), StandardCharsets.UTF_8);
 
+                // TODO: this condition is always true, right? should we unwrap it?
                 if (defConfigStream != null)
                 {
                     YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
                     this.config.setDefaults(defConfig);
                 }
             }
-            catch (UnsupportedEncodingException | NullPointerException e)
-            {
-
+            catch (NullPointerException e) {
+                // TODO: question, i used default printStackTrace here so it's not an empty catch is that okay?
+                e.printStackTrace();
             }
             return this;
         }

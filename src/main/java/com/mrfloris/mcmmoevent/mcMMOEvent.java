@@ -15,8 +15,17 @@ public class mcMMOEvent extends JavaPlugin {
     public YamlConfiguration config;
     public String color(String msg) {
         return msg.replace("&", "§");
+        // TODO: update to return ChatColor.translateAlternateColorCodes('&', msg);
     }
     private int rate;
+
+    // TODO: move prefix to public static so we can use it where appropriate
+    // String prefixFromThere = mcMMOEvent.getPrefix();
+
+    //    static String prefix = null;
+    //    public static String getPrefix() {
+    //        return prefix;
+    //    }
 
     @Override
     public void onEnable() {
@@ -25,7 +34,7 @@ public class mcMMOEvent extends JavaPlugin {
         config.copyDefaults(true).save();
         this.config = config.get();
 
-        String prefix = this.config.getString("prefix");
+        // we don't use this here (also, see above to do item) String prefix = this.config.getString("prefix");
         loadConfig();
         setRate(getConfig().getInt("xprate"));
 
@@ -46,6 +55,11 @@ public class mcMMOEvent extends JavaPlugin {
         }.runTaskLater(this, 180L);
 
         getCommand("rate").setExecutor(new RateCommand(this));
+        // TODO: nitpicky fix this warning
+        // original: getCommand("rate").setExecutor(new RateCommand(this));
+        // can be null warning fix 1: Objects.requireNonNull(getCommand("rate")).setExecutor(new RateCommand(this));
+        // can be null warning fix 2: if (this.getCommand("rate")!= null)
+        // what's the right way here to deal with command can be null on setExecutor?
 
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerCommandPreprocess(this), this);
         Bukkit.getServer().getPluginManager().registerEvents(new ServerCommand(this), this);

@@ -8,7 +8,7 @@ import com.mrfloris.mcmmoevent.mcMMOEvent;
 
 public class ServerCommand implements Listener {
 
-    private mcMMOEvent plugin;
+    private final mcMMOEvent plugin;
 
     public ServerCommand(mcMMOEvent plugin) {
         this.plugin = plugin;
@@ -18,9 +18,9 @@ public class ServerCommand implements Listener {
     public void on(ServerCommandEvent e) {
         String cmd = e.getCommand();
         if (cmd.contains("xprate ") && (cmd.contains(" true") || cmd.contains(" false"))) {
-            plugin.setRate(Integer.valueOf(cmd.split(" ")[1]));
+            plugin.setRate(Integer.parseInt(cmd.split(" ")[1]));
         } else {
-            if (cmd.equalsIgnoreCase("xprate reset")) {
+            if (cmd.contains("xprate ") && cmd.equalsIgnoreCase("xprate reset") || cmd.equalsIgnoreCase("xprate clear")) {
                 plugin.setRate(1);
             }
         }

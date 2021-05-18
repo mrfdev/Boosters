@@ -9,7 +9,7 @@ import com.mrfloris.mcmmoevent.mcMMOEvent;
 
 public class PlayerCommandPreprocess implements Listener {
 
-    private mcMMOEvent plugin;
+    private final mcMMOEvent plugin;
 
     public PlayerCommandPreprocess(mcMMOEvent plugin) {
         this.plugin = plugin;
@@ -19,13 +19,35 @@ public class PlayerCommandPreprocess implements Listener {
     public void on(PlayerCommandPreprocessEvent e) {
         String cmd = e.getMessage();
         Player p = e.getPlayer();
+        // TODO: check if command is xprate, then check for permission, no need to check permission on every command <zrips>
+//        @EventHandler
+//        public void on(PlayerCommandPreprocessEvent e) {
+//            String cmd = e.getMessage();
+//
+//            if (!cmd.toLowerCase().startsWith("/xprate "))
+//                return;
+//
+//            Player p = e.getPlayer();
+//            if (!p.hasPermission("mcmmo.commands.xprate.all") &&
+//                    !p.hasPermission("mcmmo.commands.xprate") &&
+//                    !p.hasPermission("mcmmo.commands.xprate.reset") &&
+//                    !p.hasPermission("mcmmo.commands.xprate.set") &&
+//                    !p.isOp())
+//                return;
+//
+//            if (cmd.equalsIgnoreCase("/xprate true") || cmd.equalsIgnoreCase("/xprate false")) {
+//                plugin.setRate(Integer.parseInt(cmd.split(" ")[1]));
+//            } else if (cmd.contains("/xprate ") && cmd.equalsIgnoreCase("/xprate reset") || cmd.equalsIgnoreCase("/xprate clear")) {
+//                plugin.setRate(1);
+//            }
+//        }
         if (p.hasPermission("mcmmo.commands.xprate.all") || p.hasPermission("mcmmo.commands.xprate")
                 || p.hasPermission("mcmmo.commands.xprate.reset") || p.hasPermission("mcmmo.commands.xprate.set")
                 || p.isOp()) {
             if (cmd.contains("/xprate ") && (cmd.contains(" true") || cmd.contains(" false"))) {
-                plugin.setRate(Integer.valueOf(cmd.split(" ")[1]));
+                plugin.setRate(Integer.parseInt(cmd.split(" ")[1]));
             } else {
-                if (cmd.equalsIgnoreCase("/xprate reset")) {
+                if (cmd.contains("/xprate ") && cmd.equalsIgnoreCase("/xprate reset") || cmd.equalsIgnoreCase("/xprate clear")) {
                     plugin.setRate(1);
                 }
             }

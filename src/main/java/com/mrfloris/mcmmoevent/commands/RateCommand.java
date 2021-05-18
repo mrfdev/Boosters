@@ -8,7 +8,7 @@ import com.mrfloris.mcmmoevent.mcMMOEvent;
 
 public class RateCommand implements CommandExecutor {
 
-    private mcMMOEvent plugin;
+    private final mcMMOEvent plugin;
 
     public RateCommand(mcMMOEvent plugin) {
         this.plugin = plugin;
@@ -22,10 +22,10 @@ public class RateCommand implements CommandExecutor {
             if (plugin.getRate() == 1) {
                 sender.sendMessage(plugin.color(prefix + "There's no event right now."));
             } else {
-                sender.sendMessage(plugin.color(prefix + "There's a " + plugin.getRate() + "x event going on right now."));
+                sender.sendMessage(plugin.color(prefix + "There's a &f&l" + plugin.getRate() + "&r&3x&7 event going on right now."));
             }
         } else {
-            sender.sendMessage(plugin.color(prefix + "Syntax: /rate"));
+            sender.sendMessage(plugin.color(prefix + "Syntax: &l/rate"));
         }
         return true;
     }

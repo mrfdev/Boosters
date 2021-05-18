@@ -1,13 +1,12 @@
 name: mcMMOEvent
-version: 0.0.20
+version: 0.0.22
 api-version: 1.16
 main: com.mrfloris.mcmmoevent.mcMMOEvent
-authors: [mrfloris, anonymous, smeths]
+authors: [mrfloris, anonymous, smeths, zrips]
 website: www.1moreblock.com
 description: Helper plugin for dealing with mcMMO boost events
 prefix: mcMMOEvent
-softdepend:
-    - mcMMO
+softdepend: [mcMMO]
 commands:
     rate:
         usage: "Usage: /<command>"
