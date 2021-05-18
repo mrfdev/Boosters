@@ -25,7 +25,7 @@ public class RateCommand implements CommandExecutor {
                 sender.sendMessage(plugin.color(prefix + "There's a &f&l" + plugin.getRate() + "&r&3x&7 event going on right now."));
             }
         } else {
-            sender.sendMessage(plugin.color(prefix + "Syntax: &l/rate"));
+            return false;
         }
         return true;
     }
