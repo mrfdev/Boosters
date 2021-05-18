@@ -20,6 +20,14 @@ This stopped working at some point in 1.13+, and the project was let go when we 
 
 But, I picked things back up again, updated it slightly, so it works okay with 1.16.5, and mcMMO Overhaul. This now works on 64bit java8 and java16.
 
+## Bugs / Suggestions
+
+If you have an issue with this plugin, please make sure your Spigot or Paper engine is up to date, that you are on the correct version of mcMMO and are using the latest build of this Events helper plugin. 
+
+When you're sure you've done everything right, you're free to open an issue and file a bug report. We do not guarantee a fix, but we will do our best.
+
+If you have a suggestion or feature request, feel free to open a blank new ticket under Issue > new, and describe what you wish this plugin would include. We can at least read it and take it under consideration. 
+
 ## Other contributions
 
 An honorable mention: Thank you [nossr50](https://github.com/nossr50), for making [mcMMO](https://github.com/mcMMO-Dev/mcMMO) in the first place. (And mcMMO is a reference to the plugin, it's not pretending to be mcMMO or a clone of it. No mcMMO code is included in this source.)
