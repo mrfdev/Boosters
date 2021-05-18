@@ -1,6 +1,7 @@
 package com.mrfloris.mcmmoevent;
 
 import org.bukkit.Bukkit;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -13,6 +14,8 @@ public class mcMMOEvent extends JavaPlugin {
 
     public FileManager fileManager;
     public YamlConfiguration config;
+    public static String prefix;
+
     public String color(String msg) {
         return msg.replace("&", "§");
         // TODO: update to return ChatColor.translateAlternateColorCodes('&', msg);
@@ -33,6 +36,9 @@ public class mcMMOEvent extends JavaPlugin {
         FileManager.Config config = fileManager.getConfig("config.yml");
         config.copyDefaults(true).save();
         this.config = config.get();
+        prefix = this.config.getString("prefix");
+
+
 
         // we don't use this here (also, see above to do item) String prefix = this.config.getString("prefix");
         loadConfig();
@@ -54,7 +60,9 @@ public class mcMMOEvent extends JavaPlugin {
             }
         }.runTaskLater(this, 180L);
 
-        getCommand("rate").setExecutor(new RateCommand(this));
+        PluginCommand rateCommand = getCommand("rate");
+        rateCommand.setExecutor(new RateCommand(this));
+        rateCommand.setUsage(color(prefix + rateCommand.getUsage()));
         // TODO: nitpicky fix this warning
         // original: getCommand("rate").setExecutor(new RateCommand(this));
         // can be null warning fix 1: Objects.requireNonNull(getCommand("rate")).setExecutor(new RateCommand(this));

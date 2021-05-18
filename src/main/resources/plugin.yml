@@ -9,5 +9,5 @@ prefix: mcMMOEvent
 softdepend: [mcMMO]
 commands:
     rate:
-        usage: "Usage: /<command>"
+        usage: "Usage: /&l<command>"
         description: Displays the current mcMMO Boost event
