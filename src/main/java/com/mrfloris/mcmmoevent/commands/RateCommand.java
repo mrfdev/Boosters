@@ -6,9 +6,12 @@ import org.bukkit.command.CommandSender;
 
 import com.mrfloris.mcmmoevent.mcMMOEvent;
 
+import static com.mrfloris.mcmmoevent.mcMMOEvent.prefix;
+
 public class RateCommand implements CommandExecutor {
 
     private final mcMMOEvent plugin;
+
 
     public RateCommand(mcMMOEvent plugin) {
         this.plugin = plugin;
@@ -16,8 +19,6 @@ public class RateCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        plugin.config.getString("prefix");
-        String prefix = plugin.config.getString("prefix");
         if (args.length == 0) {
             if (plugin.getRate() == 1) {
                 sender.sendMessage(plugin.color(prefix + "There's no event right now."));
