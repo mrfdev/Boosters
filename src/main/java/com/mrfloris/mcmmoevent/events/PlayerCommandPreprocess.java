@@ -44,8 +44,7 @@ public class PlayerCommandPreprocess implements Listener {
                 || p.hasPermission("mcmmo.commands.xprate.reset") || p.hasPermission("mcmmo.commands.xprate.set")) {
             if (cmd.contains("/xprate ") && (cmd.contains(" true") || cmd.contains(" false"))) {
                 plugin.setRate(Integer.parseInt(cmd.split(" ")[1]));
-            }
-            else {
+            } else {
                 if (cmd.contains("/xprate ") && cmd.equalsIgnoreCase("/xprate reset") || cmd.equalsIgnoreCase("/xprate clear")) {
                     plugin.setRate(1);
                 }

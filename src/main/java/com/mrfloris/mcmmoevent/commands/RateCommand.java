@@ -20,12 +20,10 @@ public class RateCommand implements CommandExecutor {
         if (args.length == 0) {
             if (plugin.getRate() == 1) {
                 sender.sendMessage(plugin.color(prefix + "There's no event right now."));
-            }
-            else {
+            } else {
                 sender.sendMessage(plugin.color(prefix + "There's a &f&l" + plugin.getRate() + "&r&3x&7 event going on right now."));
             }
-        }
-        else {
+        } else {
             return false;
         }
         return true;
