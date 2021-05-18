@@ -28,8 +28,10 @@ A logic issue showed up at 4 am, and thankfully so did [xsmeths](https://github.
 
 Thank you for the help buddy. < edit from xsmeths; you're welcome, happy to help you floris :-D > <Hugs>
 
+Further contributions from [The456gamer](https://github.com/the456gamer) (thank you so much!)
+
 And some suggestions from [zrips](https://github.com/zrips/) to help with improving efficiency.
 
 ## Version
 
-[Tested build](https://github.com/mrfloris/mcmmoevent/releases) Version 1.0.0, build 022, for Spigot / Paper 1.16.5. Last updated: May 2021.
+[Tested build](https://github.com/mrfloris/mcmmoevent/releases) Version 1.0.23, for Spigot / Paper 1.16.5. Last updated: May 2021.
