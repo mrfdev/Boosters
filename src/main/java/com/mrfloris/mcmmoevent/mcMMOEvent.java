@@ -1,6 +1,7 @@
 package com.mrfloris.mcmmoevent;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -17,11 +18,10 @@ public class mcMMOEvent extends JavaPlugin {
     public static String prefix;
 
     public String color(String msg) {
-        return msg.replace("&", "§");
-        // TODO: update to return ChatColor.translateAlternateColorCodes('&', msg);
+        return ChatColor.translateAlternateColorCodes('&', msg);
+        // HasBeenDone: update to return ChatColor.translateAlternateColorCodes('&', msg);
     }
     private int rate;
-
     // TODO: move prefix to public static so we can use it where appropriate
     // String prefixFromThere = mcMMOEvent.getPrefix();
 
@@ -29,7 +29,6 @@ public class mcMMOEvent extends JavaPlugin {
     //    public static String getPrefix() {
     //        return prefix;
     //    }
-
     @Override
     public void onEnable() {
         fileManager = new FileManager(this);
@@ -59,6 +58,7 @@ public class mcMMOEvent extends JavaPlugin {
         }.runTaskLater(this, 180L);
 
         PluginCommand rateCommand = getCommand("rate");
+        assert rateCommand != null;
         rateCommand.setExecutor(new RateCommand(this));
         rateCommand.setUsage(color(prefix + rateCommand.getUsage()));
         // TODO: nitpicky fix this warning
@@ -70,26 +70,21 @@ public class mcMMOEvent extends JavaPlugin {
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerCommandPreprocess(this), this);
         Bukkit.getServer().getPluginManager().registerEvents(new ServerCommand(this), this);
     }
-
     private void loadConfig() {
         // note: $rate is still 0 at this point
         getConfig().options().copyDefaults(true);
         saveConfig();
     }
-
     public void setRate(int newRate) {
         this.rate = newRate;
         getConfig().set("xprate", newRate);
         saveConfig();
 //        Bukkit.getLogger().info("DEBUG: setRate: " + rate);
     }
-
     public int getRate() {
         return this.rate;
     }
-
     public void onDisable() {
         // Just leaving this here in case we need it.
     }
-
 }
