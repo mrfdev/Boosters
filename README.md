@@ -22,14 +22,14 @@ But, I picked things back up again, updated it slightly, so it works okay with 1
 
 ## Other contributions
 
-An honorable mention: Thank you nossr50, for making mcMMO in the first place.
+An honorable mention: Thank you [nossr50](https://github.com/nossr50), for making [mcMMO](https://github.com/mcMMO-Dev/mcMMO) in the first place.
 
-A logic issue showed up at 4 am, and thankfully so did smeths, he pointed out it was the if/else statements used for determining console output being flawed, it was showing twice due to it printing if the rate was not 1 and in an else after a check for if the rate was 1.
+A logic issue showed up at 4 am, and thankfully so did [xsmeths](https://github.com/xsmeths/), he pointed out it was the if/else statements used for determining console output being flawed, it was showing twice due to it printing if the rate was not 1 and in an else after a check for if the rate was 1.
 
-Thank you for the help buddy. < edit from smeths; you're welcome, happy to help you floris :-D > <Hugs>
+Thank you for the help buddy. < edit from xsmeths; you're welcome, happy to help you floris :-D > <Hugs>
 
-And some suggestions from zrips to help with improving efficiency.
+And some suggestions from [zrips](https://github.com/zrips/) to help with improving efficiency.
 
 ## Version
 
-Version 1.0.0, build 022, for Spigot / Paper 1.16.5. Last updated: May 2021.
+[Tested build](https://github.com/mrfloris/mcmmoevent/releases) Version 1.0.0, build 022, for Spigot / Paper 1.16.5. Last updated: May 2021.
