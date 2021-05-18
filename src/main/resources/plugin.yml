@@ -1,5 +1,5 @@
 name: mcMMOEvent
-version: 0.0.22
+version: ${project.version}
 api-version: 1.16
 main: com.mrfloris.mcmmoevent.mcMMOEvent
 authors: [mrfloris, anonymous, smeths, zrips]

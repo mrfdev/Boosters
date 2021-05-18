@@ -20,16 +20,26 @@ This stopped working at some point in 1.13+, and the project was let go when we 
 
 But, I picked things back up again, updated it slightly, so it works okay with 1.16.5, and mcMMO Overhaul. This now works on 64bit java8 and java16.
 
+## Bugs / Suggestions
+
+If you have an issue with this plugin, please make sure your Spigot or Paper engine is up to date, that you are on the correct version of mcMMO and are using the latest build of this Events helper plugin. 
+
+When you're sure you've done everything right, you're free to open an issue and file a bug report. We do not guarantee a fix, but we will do our best.
+
+If you have a suggestion or feature request, feel free to open a blank new ticket under Issue > new, and describe what you wish this plugin would include. We can at least read it and take it under consideration. 
+
 ## Other contributions
 
-An honorable mention: Thank you nossr50, for making mcMMO in the first place.
+An honorable mention: Thank you [nossr50](https://github.com/nossr50), for making [mcMMO](https://github.com/mcMMO-Dev/mcMMO) in the first place. (And mcMMO is a reference to the plugin, it's not pretending to be mcMMO or a clone of it. No mcMMO code is included in this source.)
 
-A logic issue showed up at 4 am, and thankfully so did smeths, he pointed out it was the if/else statements used for determining console output being flawed, it was showing twice due to it printing if the rate was not 1 and in an else after a check for if the rate was 1.
+A logic issue showed up at 4 am, and thankfully so did [xsmeths](https://github.com/xsmeths/), he pointed out it was the if/else statements used for determining console output being flawed, it was showing twice due to it printing if the rate was not 1 and in an else after a check for if the rate was 1.
 
-Thank you for the help buddy. < edit from smeths; you're welcome, happy to help you floris :-D > <Hugs>
+Thank you for the help buddy. < edit from xsmeths; you're welcome, happy to help you floris :-D > <Hugs>
 
-And some suggestions from zrips to help with improving efficiency.
+Further contributions from [The456gamer](https://github.com/the456gamer) (thank you so much!)
+
+And some suggestions from [zrips](https://github.com/zrips/) to help with improving efficiency.
 
 ## Version
 
-Version 1.0.0, build 022, for Spigot / Paper 1.16.5. Last updated: May 2021.
+[Tested build](https://github.com/mrfloris/mcmmoevent/releases) Version 1.0.23, for Spigot / Paper 1.16.5. Last updated: May 2021.

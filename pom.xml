@@ -6,7 +6,7 @@
 
     <groupId>com.mrfloris</groupId>
     <artifactId>mcmmoevent</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.24</version>
     <packaging>jar</packaging>
 
     <name>mcMMO Event</name>
@@ -51,6 +51,7 @@
                 <filtering>true</filtering>
             </resource>
         </resources>
+        <finalName>${project.artifactId}</finalName>
     </build>
 
     <repositories>
