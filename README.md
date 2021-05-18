@@ -22,7 +22,7 @@ But, I picked things back up again, updated it slightly, so it works okay with 1
 
 ## Other contributions
 
-An honorable mention: Thank you [nossr50](https://github.com/nossr50), for making [mcMMO](https://github.com/mcMMO-Dev/mcMMO) in the first place.
+An honorable mention: Thank you [nossr50](https://github.com/nossr50), for making [mcMMO](https://github.com/mcMMO-Dev/mcMMO) in the first place. (And mcMMO is a reference to the plugin, it's not pretending to be mcMMO or a clone of it. No mcMMO code is included in this source.)
 
 A logic issue showed up at 4 am, and thankfully so did [xsmeths](https://github.com/xsmeths/), he pointed out it was the if/else statements used for determining console output being flawed, it was showing twice due to it printing if the rate was not 1 and in an else after a check for if the rate was 1.
 
