@@ -12,16 +12,24 @@ And secondly, players can at any time in-game type: `/rate` to find out if there
 
 ## Origins
 
-During the Minecraft 1.8 / 1.12.2 era with mcMMO Classic, I always wanted this feature. Someone from the Spigot community has helped me get started with this plugin. Unfortunatly. I have lost the evidence of who this was. It could have been KingTux, DefianceCoding, Norrs50 himself, my apologies. You're in the plugin.yml as Anonymous and are free to poke me for proper credits. 
+During the Minecraft 1.8 / 1.12.2 era with mcMMO Classic, I always wanted this feature. Someone from the Spigot community has helped me get started with this plugin. Unfortunately. I have lost the evidence of whom this was. It could have been KingTux, DefianceCoding, Nossr50 himself, my apologies. You're in the plugin.yml as Anonymous and are free to poke me for proper credits. 
 
-This stopped working at some point in 1.13+ and the project was let go when we converted to mcMMO Overhaul.
+This stopped working at some point in 1.13+, and the project was let go when we converted to mcMMO Overhaul.
 
 ## Where we are now
 
-But, I picked things back up again, updated it slightly so it works okay with 1.16.5, and mcMMO Overhaul. This now works on 64bit java8 and java16.
+But, I picked things back up again, updated it slightly, so it works okay with 1.16.5, and mcMMO Overhaul. This now works on 64bit java8 and java16.
 
 ## Other contributions
+
+An honorable mention: Thank you nossr50, for making mcMMO in the first place.
 
 A logic issue showed up at 4 am, and thankfully so did smeths, he pointed out it was the if/else statements used for determining console output being flawed, it was showing twice due to it printing if the rate was not 1 and in an else after a check for if the rate was 1.
 
 Thank you for the help buddy. < edit from smeths; you're welcome, happy to help you floris :-D > <Hugs>
+
+And some suggestions from zrips to help with improving efficiency.
+
+## Version
+
+Version 1.0.0, build 022, for Spigot / Paper 1.16.5. Last updated: May 2021.
