@@ -38,8 +38,6 @@ public class mcMMOEvent extends JavaPlugin {
         this.config = config.get();
         prefix = this.config.getString("prefix");
 
-
-
         // we don't use this here (also, see above to do item) String prefix = this.config.getString("prefix");
         loadConfig();
         setRate(getConfig().getInt("xprate"));
@@ -50,7 +48,7 @@ public class mcMMOEvent extends JavaPlugin {
                 if (rate <= 1) {
                     Bukkit.getLogger().info("[mcMMO] Event is off, rate: " + rate + ", (no need to start it up again)");
                 }
-                if (rate > 1 ) {
+                if (rate > 1) {
                     Bukkit.getLogger().info("[mcMMO] Event is ongoing: " + rate + ", (starting it up again)");
                     Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "xprate " + rate + " true");
                 }

@@ -19,7 +19,8 @@ public class ServerCommand implements Listener {
         String cmd = e.getCommand();
         if (cmd.contains("xprate ") && (cmd.contains(" true") || cmd.contains(" false"))) {
             plugin.setRate(Integer.parseInt(cmd.split(" ")[1]));
-        } else {
+        }
+        else {
             if (cmd.contains("xprate ") && cmd.equalsIgnoreCase("xprate reset") || cmd.equalsIgnoreCase("xprate clear")) {
                 plugin.setRate(1);
             }

@@ -14,7 +14,6 @@ public class PlayerCommandPreprocess implements Listener {
     public PlayerCommandPreprocess(mcMMOEvent plugin) {
         this.plugin = plugin;
     }
-
     @EventHandler
     public void on(PlayerCommandPreprocessEvent e) {
         String cmd = e.getMessage();
@@ -42,16 +41,15 @@ public class PlayerCommandPreprocess implements Listener {
 //            }
 //        }
         if (p.hasPermission("mcmmo.commands.xprate.all") || p.hasPermission("mcmmo.commands.xprate")
-                || p.hasPermission("mcmmo.commands.xprate.reset") || p.hasPermission("mcmmo.commands.xprate.set")
-                || p.isOp()) {
+                || p.hasPermission("mcmmo.commands.xprate.reset") || p.hasPermission("mcmmo.commands.xprate.set")) {
             if (cmd.contains("/xprate ") && (cmd.contains(" true") || cmd.contains(" false"))) {
                 plugin.setRate(Integer.parseInt(cmd.split(" ")[1]));
-            } else {
+            }
+            else {
                 if (cmd.contains("/xprate ") && cmd.equalsIgnoreCase("/xprate reset") || cmd.equalsIgnoreCase("/xprate clear")) {
                     plugin.setRate(1);
                 }
             }
         }
     }
-
 }

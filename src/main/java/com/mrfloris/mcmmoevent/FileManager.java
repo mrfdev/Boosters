@@ -16,17 +16,14 @@ public class FileManager {
     private final JavaPlugin plugin;
     private final HashMap<String, Config>    configs    = new HashMap<>();
 
-    public FileManager(JavaPlugin plugin)
-    {
+    public FileManager(JavaPlugin plugin) {
         this.plugin = plugin;
     }
-
     public Config getConfig(String name) {
         if (!configs.containsKey(name))
             configs.put(name, new Config(name));
         return configs.get(name);
     }
-
 //    public Config saveConfig(String name) {
 //        return getConfig(name).save();
 //    }
@@ -37,57 +34,44 @@ public class FileManager {
 
     public class Config {
 
-        private final String                        name;
-        private File                            file;
-        private YamlConfiguration    config;
+        private final String name;
+        private File file;
+        private YamlConfiguration config;
 
-        public Config(String name)
-        {
+        public Config(String name) {
             this.name = name;
         }
-
         public Config save() {
             if ((this.config == null) || (this.file == null))
                 return this;
-            try
-            {
+            try {
                 if (config.getConfigurationSection("").getKeys(true).size() != 0)
                     config.save(this.file);
             }
-            catch (IOException ex)
-            {
+            catch (IOException ex) {
                 ex.printStackTrace();
             }
             return this;
         }
-
         public YamlConfiguration get() {
             if (this.config == null)
                 reload();
-
             return this.config;
         }
-
         public Config saveDefaultConfig() {
             file = new File(plugin.getDataFolder(), this.name);
             plugin.saveResource(this.name, false);
             return this;
         }
-
         public Config reload() {
             if (file == null)
                 this.file = new File(plugin.getDataFolder(), this.name);
-
             this.config = YamlConfiguration.loadConfiguration(file);
-
             Reader defConfigStream;
-            try
-            {
+            try {
                 defConfigStream = new InputStreamReader(plugin.getResource(this.name), StandardCharsets.UTF_8);
-
                 // TODO: this condition is always true, right? should we unwrap it?
-                if (defConfigStream != null)
-                {
+                if (defConfigStream != null) {
                     YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
                     this.config.setDefaults(defConfig);
                 }
@@ -98,20 +82,16 @@ public class FileManager {
             }
             return this;
         }
-
         public Config copyDefaults(boolean force) {
             get().options().copyDefaults(force);
             return this;
         }
-
         public Config set(String key, Object value) {
             get().set(key, value);
             return this;
         }
-
         public Object get(String key) {
             return get().get(key);
         }
     }
-
 }
