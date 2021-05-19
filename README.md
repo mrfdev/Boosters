@@ -1,6 +1,6 @@
 # 1MB Booster Events
 
-Currently, a Helper for mcMMO Boost events
+Currently, a Helper for mcMMO Boost events for the 1MoreBlock.com Minecraft 1.16 Java server.
 
 This is a plugin for Minecraft 1.16.5 (Spigot / Paper) made as a helper for mcMMO Overhaul 2.1.x. 
 
