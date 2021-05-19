@@ -17,7 +17,6 @@ public class mcMMOEvent extends JavaPlugin {
     public static String prefix;
     public static String isInactive;
     public static String isActive;
-
     public String color(String msg) {
         return ChatColor.translateAlternateColorCodes('&', msg);
     }
@@ -38,12 +37,13 @@ public class mcMMOEvent extends JavaPlugin {
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (rate <= 1) {
+                if (rate == 1) {
                     getLogger().info(isInactive +" (rate: " + rate + ", no need to start it up again)");
-                }
-                if (rate > 1) {
+                } else if (rate > 1) {
                     getLogger().info(isActive.replaceAll("\\{rate}", String.valueOf(rate)) +" (rate: " + rate + ", starting it up again)");
                     Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "xprate " + rate + " true");
+                } else {
+                    getLogger().warning("I was expecting config.yml xprate value to be 1, 2 or 3, etc. Please fix this.");
                 }
             }
         }.runTaskLater(this, 180L);
