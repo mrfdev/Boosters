@@ -70,6 +70,7 @@ public class mcMMOEvent extends JavaPlugin {
     public int getRate() {
         return this.rate;
     }
+    @Override
     public void onDisable() {
         // Just leaving this here in case we need it.
     }
