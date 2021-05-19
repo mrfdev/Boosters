@@ -1,10 +1,10 @@
 package com.mrfloris.mcmmoevent.events;
 
-import com.google.common.primitives.Ints;
-import com.mrfloris.mcmmoevent.mcMMOEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import com.google.common.primitives.Ints;
+import com.mrfloris.mcmmoevent.mcMMOEvent;
 
 public class PlayerCommandPreprocess implements Listener {
 
