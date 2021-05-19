@@ -38,10 +38,10 @@ public class mcMMOEvent extends JavaPlugin {
             @Override
             public void run() {
                 if (rate <= 1) {
-                    Bukkit.getLogger().info("["+getDescription().getPrefix()+"] "+inactive+" (rate: " + rate + ", no need to start it up again)");
+                    getLogger().info(inactive+" (rate: " + rate + ", no need to start it up again)");
                 }
                 if (rate > 1) {
-                    Bukkit.getLogger().info("["+getDescription().getPrefix()+"] Event is ongoing: " + rate + ", (starting it up again)");
+                    getLogger().info("A Booster event is ongoing: " + rate + ", (starting it up again)");
                     Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "xprate " + rate + " true");
                 }
             }
