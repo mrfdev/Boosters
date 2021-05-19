@@ -33,6 +33,7 @@ public class PlayerCommandPreprocess implements Listener {
                 if (cmd[1].equalsIgnoreCase("reset") || cmd[1].equalsIgnoreCase("clear")) {
                     plugin.setRate(1);
                 }
+                return;
             case 3:
                 if (!cmd[2].equalsIgnoreCase("true") && !cmd[2].equalsIgnoreCase("false")) {
                     return;
