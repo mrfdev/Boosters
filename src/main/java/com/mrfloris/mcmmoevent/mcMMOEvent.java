@@ -17,6 +17,7 @@ public class mcMMOEvent extends JavaPlugin {
     public YamlConfiguration config;
     public static String prefix;
     public static String inactive;
+    public static String isactive;
 
     public String color(String msg) {
         return ChatColor.translateAlternateColorCodes('&', msg);
@@ -30,6 +31,7 @@ public class mcMMOEvent extends JavaPlugin {
         config.copyDefaults(true).save();
         this.config = config.get();
         prefix = this.config.getString("prefix");
+        isactive = this.config.getString("active-msg");
         inactive = this.config.getString("inactive-msg");
         loadConfig();
         setRate(getConfig().getInt("xprate"));
@@ -41,7 +43,7 @@ public class mcMMOEvent extends JavaPlugin {
                     getLogger().info(inactive+" (rate: " + rate + ", no need to start it up again)");
                 }
                 if (rate > 1) {
-                    getLogger().info("A Booster event is ongoing: " + rate + ", (starting it up again)");
+                    getLogger().info(isactive+" (rate: " + rate + ", starting it up again)");
                     Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "xprate " + rate + " true");
                 }
             }
