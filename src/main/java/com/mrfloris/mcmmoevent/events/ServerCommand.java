@@ -9,7 +9,6 @@ import org.bukkit.event.server.ServerCommandEvent;
 public class ServerCommand implements Listener {
 
     private final mcMMOEvent plugin;
-
     public ServerCommand(mcMMOEvent plugin) {
         this.plugin = plugin;
     }

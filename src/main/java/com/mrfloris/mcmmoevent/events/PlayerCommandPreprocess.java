@@ -9,10 +9,10 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 public class PlayerCommandPreprocess implements Listener {
 
     private final mcMMOEvent plugin;
-
     public PlayerCommandPreprocess(mcMMOEvent plugin) {
         this.plugin = plugin;
     }
+
     @EventHandler
     public void on(PlayerCommandPreprocessEvent e) {
         // mcmmo.commands.xprate.all
@@ -23,7 +23,7 @@ public class PlayerCommandPreprocess implements Listener {
         String input = e.getMessage();
         if (input.startsWith("/")){
             input = input.substring(1);
-            plugin.getLogger().info("DEBUG:before substring = \""+e.getMessage()+"\"; after = \""+input+"\"");
+            // plugin.getLogger().info("DEBUG: before substring = \""+e.getMessage()+"\"; after = \""+input+"\"");
         }
         String[] cmd = input.split(" ");
         if (!cmd[0].equalsIgnoreCase("xprate")) { return; }
