@@ -11,6 +11,15 @@ public class PlayerCommandPreprocess implements Listener {
 
     private final mcMMOEvent plugin;
 
+    int tryparse(String tryset) {
+        try {
+            return Integer.parseInt(tryset);
+        }
+        catch (NumberFormatException e) {
+            // yes
+        }
+        return Integer.parseInt(tryset);
+    }
     public PlayerCommandPreprocess(mcMMOEvent plugin) {
         this.plugin = plugin;
     }
@@ -43,7 +52,7 @@ public class PlayerCommandPreprocess implements Listener {
         if (p.hasPermission("mcmmo.commands.xprate.all") || p.hasPermission("mcmmo.commands.xprate")
                 || p.hasPermission("mcmmo.commands.xprate.reset") || p.hasPermission("mcmmo.commands.xprate.set")) {
             if (cmd.contains("/xprate ") && (cmd.contains(" true") || cmd.contains(" false"))) {
-                plugin.setRate(Integer.parseInt(cmd.split(" ")[1]));
+                plugin.setRate(tryparse(cmd.split(" ")[1]));
             } else {
                 if (cmd.contains("/xprate ") && cmd.equalsIgnoreCase("/xprate reset") || cmd.equalsIgnoreCase("/xprate clear")) {
                     plugin.setRate(1);

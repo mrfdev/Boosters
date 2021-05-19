@@ -16,19 +16,14 @@ public class mcMMOEvent extends JavaPlugin {
     public FileManager fileManager;
     public YamlConfiguration config;
     public static String prefix;
+    public static String inactive;
+    public static String isactive;
 
     public String color(String msg) {
         return ChatColor.translateAlternateColorCodes('&', msg);
-        // HasBeenDone: update to return ChatColor.translateAlternateColorCodes('&', msg);
     }
     private int rate;
-    // TODO: move prefix to public static so we can use it where appropriate
-    // String prefixFromThere = mcMMOEvent.getPrefix();
 
-    //    static String prefix = null;
-    //    public static String getPrefix() {
-    //        return prefix;
-    //    }
     @Override
     public void onEnable() {
         fileManager = new FileManager(this);
@@ -36,8 +31,8 @@ public class mcMMOEvent extends JavaPlugin {
         config.copyDefaults(true).save();
         this.config = config.get();
         prefix = this.config.getString("prefix");
-
-        // we don't use this here (also, see above to do item) String prefix = this.config.getString("prefix");
+        isactive = this.config.getString("active-msg");
+        inactive = this.config.getString("inactive-msg");
         loadConfig();
         setRate(getConfig().getInt("xprate"));
 
@@ -45,15 +40,12 @@ public class mcMMOEvent extends JavaPlugin {
             @Override
             public void run() {
                 if (rate <= 1) {
-                    Bukkit.getLogger().info("[mcMMO] Event is off, rate: " + rate + ", (no need to start it up again)");
+                    getLogger().info(inactive+" (rate: " + rate + ", no need to start it up again)");
                 }
                 if (rate > 1) {
-                    Bukkit.getLogger().info("[mcMMO] Event is ongoing: " + rate + ", (starting it up again)");
+                    getLogger().info(isactive+" (rate: " + rate + ", starting it up again)");
                     Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "xprate " + rate + " true");
                 }
-//                if (rate != 1) {
-//                    Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "xprate " + rate + " true");
-//                }
             }
         }.runTaskLater(this, 180L);
 
@@ -61,17 +53,11 @@ public class mcMMOEvent extends JavaPlugin {
         assert rateCommand != null;
         rateCommand.setExecutor(new RateCommand(this));
         rateCommand.setUsage(color(prefix + rateCommand.getUsage()));
-        // TODO: nitpicky fix this warning
-        // original: getCommand("rate").setExecutor(new RateCommand(this));
-        // can be null warning fix 1: Objects.requireNonNull(getCommand("rate")).setExecutor(new RateCommand(this));
-        // can be null warning fix 2: if (this.getCommand("rate")!= null)
-        // what's the right way here to deal with command can be null on setExecutor?
-
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerCommandPreprocess(this), this);
         Bukkit.getServer().getPluginManager().registerEvents(new ServerCommand(this), this);
     }
     private void loadConfig() {
-        // note: $rate is still 0 at this point
+        // Reminder: $rate is still 0 at this point
         getConfig().options().copyDefaults(true);
         saveConfig();
     }
@@ -79,7 +65,7 @@ public class mcMMOEvent extends JavaPlugin {
         this.rate = newRate;
         getConfig().set("xprate", newRate);
         saveConfig();
-//        Bukkit.getLogger().info("DEBUG: setRate: " + rate);
+        // DEBUG: Bukkit.getLogger().info("DEBUG: setRate: " + rate);
     }
     public int getRate() {
         return this.rate;
