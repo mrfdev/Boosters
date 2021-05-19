@@ -66,7 +66,7 @@ public class mcMMOEvent extends JavaPlugin {
         this.rate = newRate;
         getConfig().set("xprate", newRate);
         saveConfig();
-        // DEBUG: Bukkit.getLogger().info("DEBUG: setRate: " + rate);
+        // getLogger().warning("DEBUG: setRate: " + rate);
     }
     public int getRate() {
         return this.rate;
