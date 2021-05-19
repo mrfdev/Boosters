@@ -1,5 +1,8 @@
 package com.mrfloris.mcmmoevent;
 
+import com.mrfloris.mcmmoevent.commands.RateCommand;
+import com.mrfloris.mcmmoevent.events.PlayerCommandPreprocess;
+import com.mrfloris.mcmmoevent.events.ServerCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.PluginCommand;
@@ -7,17 +10,13 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import com.mrfloris.mcmmoevent.commands.RateCommand;
-import com.mrfloris.mcmmoevent.events.PlayerCommandPreprocess;
-import com.mrfloris.mcmmoevent.events.ServerCommand;
-
 public class mcMMOEvent extends JavaPlugin {
 
     public FileManager fileManager;
     public YamlConfiguration config;
     public static String prefix;
-    public static String inactive;
-    public static String isactive;
+    public static String isInactive;
+    public static String isActive;
 
     public String color(String msg) {
         return ChatColor.translateAlternateColorCodes('&', msg);
@@ -31,8 +30,8 @@ public class mcMMOEvent extends JavaPlugin {
         config.copyDefaults(true).save();
         this.config = config.get();
         prefix = this.config.getString("prefix");
-        isactive = this.config.getString("active-msg");
-        inactive = this.config.getString("inactive-msg");
+        isActive = this.config.getString("active-msg");
+        isInactive = this.config.getString("inactive-msg");
         loadConfig();
         setRate(getConfig().getInt("xprate"));
 
@@ -40,10 +39,10 @@ public class mcMMOEvent extends JavaPlugin {
             @Override
             public void run() {
                 if (rate <= 1) {
-                    getLogger().info(inactive+" (rate: " + rate + ", no need to start it up again)");
+                    getLogger().info(isInactive +" (rate: " + rate + ", no need to start it up again)");
                 }
                 if (rate > 1) {
-                    getLogger().info(isactive+" (rate: " + rate + ", starting it up again)");
+                    getLogger().info(isActive.replaceAll("\\{rate}", String.valueOf(rate)) +" (rate: " + rate + ", starting it up again)");
                     Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "xprate " + rate + " true");
                 }
             }
@@ -51,7 +50,9 @@ public class mcMMOEvent extends JavaPlugin {
 
         PluginCommand rateCommand = getCommand("rate");
         assert rateCommand != null;
-        rateCommand.setExecutor(new RateCommand(this));
+        RateCommand rateCommandInstance = new RateCommand(this);
+        rateCommand.setExecutor(rateCommandInstance);
+        rateCommand.setTabCompleter(rateCommandInstance);
         rateCommand.setUsage(color(prefix + rateCommand.getUsage()));
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerCommandPreprocess(this), this);
         Bukkit.getServer().getPluginManager().registerEvents(new ServerCommand(this), this);
