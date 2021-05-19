@@ -15,7 +15,7 @@ public class ServerCommand implements Listener {
             return Integer.parseInt(tryset);
         }
         catch (NumberFormatException e) {
-            // yes
+            e.addSuppressed(e);
         }
         return 1;
     }

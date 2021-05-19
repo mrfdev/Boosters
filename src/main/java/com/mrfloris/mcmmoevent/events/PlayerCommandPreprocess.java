@@ -18,7 +18,7 @@ public class PlayerCommandPreprocess implements Listener {
         catch (NumberFormatException e) {
             // yes
         }
-        return 1;
+        return Integer.parseInt(tryset);
     }
     public PlayerCommandPreprocess(mcMMOEvent plugin) {
         this.plugin = plugin;
@@ -26,7 +26,6 @@ public class PlayerCommandPreprocess implements Listener {
     @EventHandler
     public void on(PlayerCommandPreprocessEvent e) {
         String cmd = e.getMessage();
-        String[] args = cmd.split(" ");
         Player p = e.getPlayer();
         // TODO: check if command is xprate, then check for permission, no need to check permission on every command <zrips>
 //        @EventHandler
@@ -52,11 +51,10 @@ public class PlayerCommandPreprocess implements Listener {
 //        }
         if (p.hasPermission("mcmmo.commands.xprate.all") || p.hasPermission("mcmmo.commands.xprate")
                 || p.hasPermission("mcmmo.commands.xprate.reset") || p.hasPermission("mcmmo.commands.xprate.set")) {
-            if (args.length == 3 && args[0].equalsIgnoreCase("xprate")
-                    && (args[2].equalsIgnoreCase("true") || args[2].equalsIgnoreCase("false"))) {
-                plugin.setRate(tryparse(args[1]));
+            if (cmd.contains("/xprate ") && (cmd.contains(" true") || cmd.contains(" false"))) {
+                plugin.setRate(tryparse(cmd.split(" ")[1]));
             } else {
-                if (args[0].equalsIgnoreCase("xprate") && cmd.equalsIgnoreCase("/xprate reset") || cmd.equalsIgnoreCase("/xprate clear")) {
+                if (cmd.contains("/xprate ") && cmd.equalsIgnoreCase("/xprate reset") || cmd.equalsIgnoreCase("/xprate clear")) {
                     plugin.setRate(1);
                 }
             }
