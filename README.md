@@ -1,6 +1,6 @@
-# mcMMO Events
+# 1MB Booster Events
 
-Helper for mcMMO Boost events
+Currently a Helper for mcMMO Boost events
 
 This is a plugin for Minecraft 1.16.5 (Spigot / Paper) made as a helper for mcMMO Overhaul 2.1.x. 
 
