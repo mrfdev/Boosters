@@ -1,2 +1,4 @@
 xprate: 1
 prefix: "&3 1MB mcMMO »&7 "
+active-msg: "This variable is not yet being used"
+inactive-msg: "There is no Booster event active right now."

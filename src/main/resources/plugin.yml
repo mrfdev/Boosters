@@ -2,10 +2,11 @@ name: mcMMOEvent
 version: ${project.version}
 api-version: 1.16
 main: com.mrfloris.mcmmoevent.mcMMOEvent
-authors: [mrfloris, anonymous, smeths, zrips]
-website: www.1moreblock.com
+author: mrfloris
+authors: [Anonymous, smeths, zrips]
+website: github.com/mrfloris/mcmmoevent
 description: Helper plugin for dealing with mcMMO boost events
-prefix: mcMMOEvent
+prefix: mcMMO Event
 softdepend: [mcMMO]
 commands:
     rate:

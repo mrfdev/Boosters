@@ -7,6 +7,7 @@ import java.io.Reader;
 // import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.Objects;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -45,7 +46,7 @@ public class FileManager {
             if ((this.config == null) || (this.file == null))
                 return this;
             try {
-                if (config.getConfigurationSection("").getKeys(true).size() != 0)
+                if (Objects.requireNonNull(config.getConfigurationSection("")).getKeys(true).size() != 0)
                     config.save(this.file);
             }
             catch (IOException ex) {
@@ -69,7 +70,7 @@ public class FileManager {
             this.config = YamlConfiguration.loadConfiguration(file);
             Reader defConfigStream;
             try {
-                defConfigStream = new InputStreamReader(plugin.getResource(this.name), StandardCharsets.UTF_8);
+                defConfigStream = new InputStreamReader(Objects.requireNonNull(plugin.getResource(this.name)), StandardCharsets.UTF_8);
                 // TODO: this condition is always true, right? should we unwrap it?
                 if (defConfigStream != null) {
                     YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
