@@ -3,12 +3,12 @@ version: ${project.version}
 api-version: 1.16
 main: com.mrfloris.mcmmoevent.mcMMOEvent
 author: mrfloris
-authors: [Anonymous, smeths, zrips]
+authors: [Anonymous, smeths, zrips, the456gamer]
 website: github.com/mrfloris/mcmmoevent
-description: Helper plugin for dealing with mcMMO boost events
-prefix: mcMMO Event
+description: 1MB Helper plugin for dealing with server booster events (such as mcMMO)
+prefix: Booster Event
 softdepend: [mcMMO]
 commands:
     rate:
         usage: "Usage: /&l<command>"
-        description: Displays the current mcMMO Boost event
+        description: Displays if there currently is an ongoing server Booster event
