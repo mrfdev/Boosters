@@ -1,14 +1,16 @@
 # 1MB Booster Events
 
-Currently a Helper for mcMMO Boost events
+Currently, a Helper for mcMMO Boost events
 
 This is a plugin for Minecraft 1.16.5 (Spigot / Paper) made as a helper for mcMMO Overhaul 2.1.x. 
 
 The purpose of this plugin is two-fold:
 
-First, it will try to keep track of ongoing mcMMO /xprate events, so when the server restarts it will try to automatically start it back up again. 
+First, it will try to keep track of ongoing server (mcMMO /xprate) events, so when the server restarts it will try to automatically start it back up again. 
 
 And secondly, players can at any time in-game type: `/rate` to find out if there is an event active, and if so, which rate the xp multiplier is set to.
+
+More details about installation, configuration and usage can be found in the [wiki](https://github.com/mrfloris/mcmmoevent/wiki) pages.
 
 ## Origins
 
@@ -18,15 +20,15 @@ This stopped working at some point in 1.13+, and the project was let go when we 
 
 ## Where we are now
 
-But, I picked things back up again, updated it slightly, so it works okay with 1.16.5, and mcMMO Overhaul. This now works on 64bit java8 and java16.
+With Mojang's version 1.17 of Minecraft around the corner, I wanted to pick things up again for some projects. Including this one. I've updated it slightly, so it works _okay_ with 1.16.5, and mcMMO Overhaul. This now works on 64bit java8, java11 and java16. The next step is making it a bit more modern, follow the logic of its purpose a bit more. And prepping it for future features that I want to consider.
 
 ## Bugs / Suggestions
 
-If you have an issue with this plugin, please make sure your Spigot or Paper engine is up to date, that you are on the correct version of mcMMO and are using the latest build of this Events helper plugin. 
+If you have an issue with this plugin, please make sure your Spigot or Paper engine is up to date, that you are on the correct version of mcMMO and are using the latest build of this 1MB Boosters plugin. 
 
-When you're sure you've done everything right, you're free to open an issue and file a bug report. We do not guarantee a fix, but we will do our best.
+When you're sure you've done everything right, you're free to [open an issue](https://github.com/mrfloris/mcmmoevent/issues/new?assignees=&labels=bug&template=bug_report.md&title=%5BBUG%5D) and file a bug report. We do not guarantee a fix, but we will do our best.
 
-If you have a suggestion or feature request, feel free to open a blank new ticket under Issue > new, and describe what you wish this plugin would include. We can at least read it and take it under consideration. 
+If you have a suggestion or feature request, feel free to [open a new discussion](https://github.com/mrfloris/mcmmoevent/discussions/new), and describe what you wish this plugin would include. We can at least read it and take it under consideration. 
 
 ## Other contributions
 
@@ -42,4 +44,4 @@ And some suggestions from [zrips](https://github.com/zrips/) to help with improv
 
 ## Version
 
-[Tested build](https://github.com/mrfloris/mcmmoevent/releases) Version 1.0.23, for Spigot / Paper 1.16.5. Last updated: May 2021.
+[Tested build](https://github.com/mrfloris/mcmmoevent/releases) Version 1.0.27, for Spigot / Paper 1.16.5. Last updated: May 2021.
