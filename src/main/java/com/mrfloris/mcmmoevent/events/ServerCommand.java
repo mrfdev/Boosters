@@ -10,17 +10,27 @@ public class ServerCommand implements Listener {
 
     private final mcMMOEvent plugin;
 
+    int tryparse(String tryset) {
+        try {
+            return Integer.parseInt(tryset);
+        }
+        catch (NumberFormatException e) {
+            // yes
+        }
+        return 1;
+    }
     public ServerCommand(mcMMOEvent plugin) {
         this.plugin = plugin;
     }
-
     @EventHandler
     public void on(ServerCommandEvent e) {
         String cmd = e.getCommand();
-        if (cmd.contains("xprate ") && (cmd.contains(" true") || cmd.contains(" false"))) {
-            plugin.setRate(Integer.parseInt(cmd.split(" ")[1]));
+        String[] args = cmd.split(" ");
+        if (args.length == 3 && args[0].equalsIgnoreCase("xprate")
+                && (args[2].equalsIgnoreCase("true") || args[2].equalsIgnoreCase("false"))) {
+            plugin.setRate(tryparse(args[1]));
         } else {
-            if (cmd.contains("xprate ") && cmd.equalsIgnoreCase("xprate reset") || cmd.equalsIgnoreCase("xprate clear")) {
+            if (args[0].equalsIgnoreCase("xprate") && cmd.equalsIgnoreCase("xprate reset") || cmd.equalsIgnoreCase("xprate clear")) {
                 plugin.setRate(1);
             }
         }
