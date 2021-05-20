@@ -20,7 +20,7 @@ This stopped working at some point in 1.13+, and the project was let go when we 
 
 ## Where we are now
 
-With Mojang's version 1.17 of Minecraft around the corner, I wanted to pick things up again for some projects. Including this one. I've updated it slightly, so it works _okay_ with 1.16.5, and mcMMO Overhaul. This now works on 64bit java8, java11 and java16. The next step is making it a bit more modern, follow the logic of its purpose a bit more. And prepping it for future features that I want to consider.
+With Minecraft version 1.17 around the corner, I wanted to pick things up again for some projects. Including this one. I've updated it slightly, so it works _okay_ with 1.16.5, and mcMMO Overhaul. This now works on 64bit java8, java11 and java16. The next step is making it a bit more modern, follow the logic of its purpose a bit more. And prepping it for future features that I want to consider.
 
 ## Bugs / Suggestions
 
