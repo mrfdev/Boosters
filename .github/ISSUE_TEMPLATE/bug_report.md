@@ -26,7 +26,7 @@ If applicable, add screenshots to help explain your problem:
 **Desktop or Server**
  - OS (and version): `something`
  - /ver `something`
- - /ver mcMMOEvent `something`
+ - /ver Boosters `something`
  - /ver mcMMO `something`
  
 
