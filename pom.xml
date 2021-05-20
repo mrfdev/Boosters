@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.mrfloris</groupId>
-    <artifactId>mcmmoevent</artifactId>
+    <artifactId>Boosters</artifactId>
     <version>1.0.28</version>
     <packaging>jar</packaging>
 
@@ -51,7 +51,7 @@
                 <filtering>true</filtering>
             </resource>
         </resources>
-        <finalName>1MB-Boosters-${project.artifactId}</finalName>
+        <finalName>1MB-${project.artifactId}</finalName>
     </build>
 
     <repositories>

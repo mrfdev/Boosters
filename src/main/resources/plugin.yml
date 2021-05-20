@@ -1,4 +1,4 @@
-name: Boosters
+name: ${project.artifactId}
 version: ${project.version}
 api-version: 1.16
 main: com.mrfloris.boosters.pluginEvents
@@ -6,7 +6,7 @@ author: mrfloris
 authors: [Anonymous, smeths, zrips, the456gamer]
 website: github.com/mrfdev/Boosters
 description: 1MB Helper plugin for dealing with server booster events
-prefix: 1MB Boosters
+prefix: ${project.name}
 softdepend: [mcMMO]
 commands:
     rate:
