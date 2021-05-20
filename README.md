@@ -1,6 +1,8 @@
-# 1MB Booster Events
+# 1MB Boosters
 
-**This is a Helper plugin for Booster events on the 1MoreBlock.com Minecraft 1.16 Java server. Currently, it supports mcMMO Overhaul 2.1.x**
+**This is a Helper plugin for the booster events we hold on the 1MoreBlock.com Minecraft 1.16 Java server.**
+
+Currently, it supports mcMMO Overhaul 2.1.x, I can imagine more (see wishlist below)
 
 The purpose of this plugin is two-fold:
 
@@ -27,6 +29,10 @@ If you have an issue with this plugin, please make sure your Spigot or Paper eng
 When you're sure you've done everything right, you're free to [open an issue](https://github.com/mrfloris/mcmmoevent/issues/new?assignees=&labels=bug&template=bug_report.md&title=%5BBUG%5D) and file a bug report. We do not guarantee a fix, but we will do our best.
 
 If you have a suggestion or feature request, feel free to [open a new discussion](https://github.com/mrfloris/mcmmoevent/discussions/new), and describe what you wish this plugin would include. We can at least read it and take it under consideration. 
+
+## Wishlist
+
+At the moment this supports mcMMO XP Multiplier Rate Events, but I can imagine in the (near) future we could add support for Jobs-Reborn, PyroWelcomes, Discord, etc.
 
 ## Other contributions
 
