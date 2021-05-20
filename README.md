@@ -10,7 +10,7 @@ First, it will try to keep track of ongoing server (mcMMO /xprate) events, so wh
 
 And secondly, players can at any time in-game type: `/rate` to find out if there is an event active, and if so, which rate the xp multiplier is set to.
 
-More details about installation, configuration and usage can be found in the [wiki](https://github.com/mrfloris/mcmmoevent/wiki) pages.
+More details about installation, configuration and usage can be found in the [wiki](https://github.com/mrfdev/Boosters/wiki) pages.
 
 ## Origins
 
@@ -26,9 +26,9 @@ With Minecraft version 1.17 around the corner, I wanted to pick things up again 
 
 If you have an issue with this plugin, please make sure your Spigot or Paper engine is up to date, that you are on the correct version of mcMMO and are using the latest build of this 1MB Boosters plugin. 
 
-When you're sure you've done everything right, you're free to [open an issue](https://github.com/mrfloris/mcmmoevent/issues/new?assignees=&labels=bug&template=bug_report.md&title=%5BBUG%5D) and file a bug report. We do not guarantee a fix, but we will do our best.
+When you're sure you've done everything right, you're free to [open an issue](https://github.com/mrfdev/Boosters/issues/new?assignees=&labels=bug&template=bug_report.md&title=%5BBUG%5D) and file a bug report. We do not guarantee a fix, but we will do our best.
 
-If you have a suggestion or feature request, feel free to [open a new discussion](https://github.com/mrfloris/mcmmoevent/discussions/new), and describe what you wish this plugin would include. We can at least read it and take it under consideration. 
+If you have a suggestion or feature request, feel free to [open a new discussion](https://github.com/mrfdev/Boosters/discussions/new), and describe what you wish this plugin would include. We can at least read it and take it under consideration. 
 
 ## Wishlist
 
@@ -48,4 +48,4 @@ And some suggestions from [zrips](https://github.com/zrips/) to help with improv
 
 ## Version
 
-[Tested build](https://github.com/mrfloris/mcmmoevent/releases) Version 1.0.27, for Spigot / Paper 1.16.5. Last updated: May 2021.
+[Tested build](https://github.com/mrfdev/Boosters/releases) Version 1.0.28, for Spigot / Paper 1.16.5. Last updated: May 2021.
