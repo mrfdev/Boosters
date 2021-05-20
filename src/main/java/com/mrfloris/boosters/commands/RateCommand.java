@@ -1,19 +1,19 @@
-package com.mrfloris.mcmmoevent.commands;
+package com.mrfloris.boosters.commands;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import java.util.List;
-import com.mrfloris.mcmmoevent.mcMMOEvent;
-import static com.mrfloris.mcmmoevent.mcMMOEvent.prefix;
-import static com.mrfloris.mcmmoevent.mcMMOEvent.isInactive;
-import static com.mrfloris.mcmmoevent.mcMMOEvent.isActive;
+import com.mrfloris.boosters.pluginEvents;
+import static com.mrfloris.boosters.pluginEvents.prefix;
+import static com.mrfloris.boosters.pluginEvents.isInactive;
+import static com.mrfloris.boosters.pluginEvents.isActive;
 
 public class RateCommand implements CommandExecutor, TabCompleter {
 
-    private final mcMMOEvent plugin;
-    public RateCommand(mcMMOEvent plugin) {
+    private final pluginEvents plugin;
+    public RateCommand(pluginEvents plugin) {
         this.plugin = plugin;
     }
 

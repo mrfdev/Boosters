@@ -1,4 +1,4 @@
-package com.mrfloris.mcmmoevent;
+package com.mrfloris.boosters;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -6,11 +6,11 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import com.mrfloris.mcmmoevent.commands.RateCommand;
-import com.mrfloris.mcmmoevent.events.PlayerCommandPreprocess;
-import com.mrfloris.mcmmoevent.events.ServerCommand;
+import com.mrfloris.boosters.commands.RateCommand;
+import com.mrfloris.boosters.events.PlayerCommandPreprocess;
+import com.mrfloris.boosters.events.ServerCommand;
 
-public class mcMMOEvent extends JavaPlugin {
+public class pluginEvents extends JavaPlugin {
 
     private int rate;
     public FileManager fileManager;

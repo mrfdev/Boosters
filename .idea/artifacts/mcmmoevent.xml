@@ -2,7 +2,7 @@
   <artifact type="jar" name="mcmmoevent">
     <output-path>$PROJECT_DIR$/out/artifacts/mcmmoevent</output-path>
     <root id="archive" name="mcmmoevent.jar">
-      <element id="module-output" name="mcmmoevent" />
+      <element id="module-output" name="Boosters" />
     </root>
   </artifact>
 </component>

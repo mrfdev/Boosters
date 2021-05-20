@@ -1,15 +1,15 @@
-package com.mrfloris.mcmmoevent.events;
+package com.mrfloris.boosters.events;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerCommandEvent;
 import com.google.common.primitives.Ints;
-import com.mrfloris.mcmmoevent.mcMMOEvent;
+import com.mrfloris.boosters.pluginEvents;
 
 public class ServerCommand implements Listener {
 
-    private final mcMMOEvent plugin;
-    public ServerCommand(mcMMOEvent plugin) {
+    private final pluginEvents plugin;
+    public ServerCommand(pluginEvents plugin) {
         this.plugin = plugin;
     }
 
