@@ -38,7 +38,7 @@ public class pluginEvents extends JavaPlugin {
             @Override
             public void run() {
                 if (rate == 1) {
-                    getLogger().info(isInactive +" (rate: " + rate + ", no need to start it up again)");
+                    getLogger().info(isInactive);
                 } else if (rate > 1) {
                     getLogger().info(isActive.replaceAll("\\{rate}", String.valueOf(rate)) +" (rate: " + rate + ", starting it up again)");
                     Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "xprate " + rate + " true");
