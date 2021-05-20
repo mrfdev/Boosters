@@ -49,7 +49,10 @@ public class pluginEvents extends JavaPlugin {
         }.runTaskLater(this, 180L);
 
         PluginCommand rateCommand = getCommand("rate");
-        assert rateCommand != null;
+        if (rateCommand == null) {
+            getLogger().warning("I was expecting something but rateCommand was null.");
+            return;
+        }
         RateCommand rateCommandInstance = new RateCommand(this);
         rateCommand.setExecutor(rateCommandInstance);
         rateCommand.setTabCompleter(rateCommandInstance);
