@@ -1,4 +1,4 @@
-xprate: 1
+mcmmo-rate: 1
 prefix: "&3 1MB Server »&7 "
 active-msg: "A Booster event is active right now! Rate: &f&l{rate}&r&3x &7mcMMO"
 inactive-msg: "There is currently no Booster event active."

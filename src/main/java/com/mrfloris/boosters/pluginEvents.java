@@ -32,7 +32,7 @@ public class pluginEvents extends JavaPlugin {
         isActive = this.config.getString("active-msg");
         isInactive = this.config.getString("inactive-msg");
         loadConfig();
-        setRate(getConfig().getInt("xprate"));
+        setRate(getConfig().getInt("mcmmo-rate"));
 
         new BukkitRunnable() {
             @Override
@@ -43,7 +43,7 @@ public class pluginEvents extends JavaPlugin {
                     getLogger().info(isActive.replaceAll("\\{rate}", String.valueOf(rate)) +" (rate: " + rate + ", starting it up again)");
                     Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "xprate " + rate + " true");
                 } else {
-                    getLogger().warning("I was expecting config.yml xprate value to be 1, 2 or 3, etc. Please fix this.");
+                    getLogger().warning("I was expecting config.yml mcmmo-rate value to be 1, 2 or 3, etc. Please fix this.");
                 }
             }
         }.runTaskLater(this, 180L);
@@ -64,13 +64,14 @@ public class pluginEvents extends JavaPlugin {
     }
     public void setRate(int newRate) {
         this.rate = newRate;
-        getConfig().set("xprate", newRate);
+        getConfig().set("mcmmo-rate", newRate);
         saveConfig();
         // getLogger().warning("DEBUG: setRate: " + rate);
     }
     public int getRate() {
         return this.rate;
     }
+
     @Override
     public void onDisable() {
         // Just leaving this here in case we need it.
