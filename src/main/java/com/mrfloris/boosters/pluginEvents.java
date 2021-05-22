@@ -80,8 +80,4 @@ public class pluginEvents extends JavaPlugin {
         return this.rate;
     }
 
-    @Override
-    public void onDisable() {
-        // Just leaving this here in case we need it.
-    }
 }
