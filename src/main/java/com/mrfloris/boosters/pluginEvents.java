@@ -29,7 +29,6 @@ public class pluginEvents extends JavaPlugin {
         prefix = this.config.getString("prefix");
         isActive = this.config.getString("active-msg");
         isInactive = this.config.getString("inactive-msg");
-        loadConfig();
         setRate(getConfig().getInt("mcmmo-rate"));
 
         new BukkitRunnable() {
