@@ -48,7 +48,7 @@ public class pluginEvents extends JavaPlugin {
                     getLogger().info(isActive.replaceAll("\\{rate}", String.valueOf(rate)) +" (rate: " + rate + ", starting it up again)");
                     Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "xprate " + rate + " true");
                 } else {
-                    getLogger().warning("I was expecting config.yml mcmmo-rate value to be 1, 2 or 3, etc. Please fix this.");
+                    getLogger().warning("I was expecting config.yml mcmmo-rate value to be 1, 2 or 3, etc, not "+rate+". Please fix this.");
                 }
             }
         }.runTaskLater(this, 180L);
