@@ -4,6 +4,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+
+import java.util.Collections;
 import java.util.List;
 import com.mrfloris.boosters.pluginEvents;
 import static com.mrfloris.boosters.pluginEvents.prefix;
@@ -36,6 +38,6 @@ public class RateCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings) {
-        return null;
+        return Collections.emptyList();
     }
 }
