@@ -6,7 +6,7 @@ import com.mrfloris.boosters.events.ServerCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.PluginCommand;
-import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -15,8 +15,7 @@ import java.util.logging.Level;
 public class pluginEvents extends JavaPlugin {
 
     private int rate;
-    public FileManager fileManager;
-    public YamlConfiguration config;
+    public FileConfiguration config;
     public static String prefix;
     public static String isInactive;
     public static String isActive;
@@ -27,16 +26,14 @@ public class pluginEvents extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        fileManager = new FileManager(this);
-        FileManager.Config config = fileManager.getConfig("config.yml");
-        config.copyDefaults(true).save();
-        this.config = config.get();
+        config = this.getConfig();
+        config.options().copyDefaults(true);
+        this.saveDefaultConfig();
         prefix = this.config.getString("prefix");
         isActive = this.config.getString("active-msg");
         isInactive = this.config.getString("inactive-msg");
         isDebug = this.config.getBoolean("debug-mode",false);
         if (isDebug) { this.getLogger().setLevel(Level.FINE); }
-        loadConfig();
         setRate(getConfig().getInt("mcmmo-rate"));
 
         new BukkitRunnable() {
@@ -64,11 +61,6 @@ public class pluginEvents extends JavaPlugin {
         rateCommand.setUsage(color(prefix + rateCommand.getUsage()));
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerCommandPreprocess(this), this);
         Bukkit.getServer().getPluginManager().registerEvents(new ServerCommand(this), this);
-    }
-    private void loadConfig() {
-        // Reminder: $rate is still 0 at this point
-        getConfig().options().copyDefaults(true);
-        saveConfig();
     }
     public void setRate(int newRate) {
         this.rate = newRate;
