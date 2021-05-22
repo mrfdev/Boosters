@@ -10,6 +10,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.logging.Level;
+
 public class pluginEvents extends JavaPlugin {
 
     private int rate;
@@ -18,6 +20,7 @@ public class pluginEvents extends JavaPlugin {
     public static String prefix;
     public static String isInactive;
     public static String isActive;
+    public static Boolean isDebug;
     public String color(String msg) {
         return ChatColor.translateAlternateColorCodes('&', msg);
     }
@@ -31,6 +34,8 @@ public class pluginEvents extends JavaPlugin {
         prefix = this.config.getString("prefix");
         isActive = this.config.getString("active-msg");
         isInactive = this.config.getString("inactive-msg");
+        isDebug = this.config.getBoolean("debug-mode",false);
+        if (isDebug) { this.getLogger().setLevel(Level.FINE); }
         loadConfig();
         setRate(getConfig().getInt("mcmmo-rate"));
 
@@ -69,7 +74,7 @@ public class pluginEvents extends JavaPlugin {
         this.rate = newRate;
         getConfig().set("mcmmo-rate", newRate);
         saveConfig();
-        // getLogger().warning("DEBUG: setRate: " + rate);
+        getLogger().fine("DEBUG: setRate: " + rate);
     }
     public int getRate() {
         return this.rate;
