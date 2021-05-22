@@ -1,14 +1,16 @@
 package com.mrfloris.boosters;
 
+import com.mrfloris.boosters.commands.RateCommand;
+import com.mrfloris.boosters.events.PlayerCommandPreprocess;
+import com.mrfloris.boosters.events.ServerCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import com.mrfloris.boosters.commands.RateCommand;
-import com.mrfloris.boosters.events.PlayerCommandPreprocess;
-import com.mrfloris.boosters.events.ServerCommand;
+
+import java.util.logging.Level;
 
 public class pluginEvents extends JavaPlugin {
 
@@ -17,6 +19,7 @@ public class pluginEvents extends JavaPlugin {
     public static String prefix;
     public static String isInactive;
     public static String isActive;
+    public static Boolean isDebug;
     public String color(String msg) {
         return ChatColor.translateAlternateColorCodes('&', msg);
     }
@@ -29,6 +32,8 @@ public class pluginEvents extends JavaPlugin {
         prefix = this.config.getString("prefix");
         isActive = this.config.getString("active-msg");
         isInactive = this.config.getString("inactive-msg");
+        isDebug = this.config.getBoolean("debug-mode",false);
+        if (isDebug) { this.getLogger().setLevel(Level.FINE); }
         setRate(getConfig().getInt("mcmmo-rate"));
 
         new BukkitRunnable() {
@@ -40,7 +45,7 @@ public class pluginEvents extends JavaPlugin {
                     getLogger().info(isActive.replaceAll("\\{rate}", String.valueOf(rate)) +" (rate: " + rate + ", starting it up again)");
                     Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "xprate " + rate + " true");
                 } else {
-                    getLogger().warning("I was expecting config.yml mcmmo-rate value to be 1, 2 or 3, etc. Please fix this.");
+                    getLogger().warning("I was expecting config.yml mcmmo-rate value to be 1, 2 or 3, etc, not "+rate+". Please fix this.");
                 }
             }
         }.runTaskLater(this, 180L);
@@ -61,14 +66,10 @@ public class pluginEvents extends JavaPlugin {
         this.rate = newRate;
         getConfig().set("mcmmo-rate", newRate);
         saveConfig();
-        // getLogger().warning("DEBUG: setRate: " + rate);
+        getLogger().fine("DEBUG: setRate: " + rate);
     }
     public int getRate() {
         return this.rate;
     }
 
-    @Override
-    public void onDisable() {
-        // Just leaving this here in case we need it.
-    }
 }
