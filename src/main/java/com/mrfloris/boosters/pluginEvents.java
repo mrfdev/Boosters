@@ -1,14 +1,14 @@
 package com.mrfloris.boosters;
 
+import com.mrfloris.boosters.commands.RateCommand;
+import com.mrfloris.boosters.events.PlayerCommandPreprocess;
+import com.mrfloris.boosters.events.ServerCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import com.mrfloris.boosters.commands.RateCommand;
-import com.mrfloris.boosters.events.PlayerCommandPreprocess;
-import com.mrfloris.boosters.events.ServerCommand;
 
 public class pluginEvents extends JavaPlugin {
 
