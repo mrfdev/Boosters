@@ -47,8 +47,6 @@ public class pluginEvents extends JavaPlugin {
         prefix = this.config.getString("prefix");
         isActive = this.config.getString("active-msg");
         isInactive = this.config.getString("inactive-msg");
-        isDebug = this.config.getBoolean("debug-mode",false);
-        if (isDebug) { this.getLogger().setLevel(Level.FINE); }
         setRate(getConfig().getInt("mcmmo-rate"));
 
         new BukkitRunnable() {
@@ -81,7 +79,7 @@ public class pluginEvents extends JavaPlugin {
         this.rate = newRate;
         getConfig().set("mcmmo-rate", newRate);
         saveConfig();
-        getLogger().fine("DEBUG: setRate: " + rate);
+        // getLogger().info("DEBUG: setRate: " + rate);
     }
     public int getRate() {
         return this.rate;
