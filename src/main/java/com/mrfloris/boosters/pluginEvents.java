@@ -22,7 +22,7 @@ public class pluginEvents extends JavaPlugin {
     public static String isInactive;
     public static String isActive;
     public static Boolean isDebug;
-    Pattern pattern = Pattern.compile("#[a-fA-F0-9]{6}");
+    Pattern pattern = Pattern.compile("\{#[a-fA-F0-9]{6}}");
     public String color(String msg) {
         Matcher matcher = pattern.matcher(msg);
         while (matcher.find()) {
