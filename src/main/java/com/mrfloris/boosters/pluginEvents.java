@@ -22,13 +22,20 @@ public class pluginEvents extends JavaPlugin {
     public static String isInactive;
     public static String isActive;
     public static Boolean isDebug;
-    Pattern pattern = Pattern.compile("#[a-fA-F0-9]{6}");
+    private static final Pattern hexColorPattern = Pattern.compile("\\{#[a-fA-F0-9]{6}}");
+
     public String color(String msg) {
-        Matcher matcher = pattern.matcher(msg);
-        while (matcher.find()) {
-            String color = msg.substring(matcher.start(), matcher.end());
-            msg = msg.replace(color, ChatColor.of(color) + "");
-            matcher = pattern.matcher(msg);
+        return color(msg,Boolean.TRUE);
+    }
+
+    public String color(String msg, Boolean useHex) {
+        if (useHex) {
+            Matcher matcher = hexColorPattern.matcher(msg);
+            while (matcher.find()) {
+                String color = msg.substring(matcher.start(), matcher.end());
+                msg = msg.replace(color, ChatColor.of(color) + "");
+                matcher = hexColorPattern.matcher(msg);
+            }
         }
         return ChatColor.translateAlternateColorCodes('&', msg);
     }
