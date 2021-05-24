@@ -3,14 +3,16 @@ package com.mrfloris.boosters;
 import com.mrfloris.boosters.commands.RateCommand;
 import com.mrfloris.boosters.events.PlayerCommandPreprocess;
 import com.mrfloris.boosters.events.ServerCommand;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class pluginEvents extends JavaPlugin {
 
@@ -20,7 +22,19 @@ public class pluginEvents extends JavaPlugin {
     public static String isInactive;
     public static String isActive;
     public static Boolean isDebug;
+    Pattern pattern = Pattern.compile("#[a-fA-F0-9]{6}");
     public String color(String msg) {
+        if (!Bukkit.getVersion().contains("1.8") && !Bukkit.getVersion().contains("1.9")
+                && !Bukkit.getVersion().contains("1.10") && !Bukkit.getVersion().contains("1.11")
+                && !Bukkit.getVersion().contains("1.12") && !Bukkit.getVersion().contains("1.13")
+                && !Bukkit.getVersion().contains("1.14") && !Bukkit.getVersion().contains("1.15")) {
+            Matcher matcher = pattern.matcher(msg);
+            while (matcher.find()) {
+                String color = msg.substring(matcher.start(), matcher.end());
+                msg = msg.replace(color, ChatColor.of(color) + "");
+                matcher = pattern.matcher(msg);
+            }
+        }
         return ChatColor.translateAlternateColorCodes('&', msg);
     }
 
