@@ -4,14 +4,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <name>1MB Boosters</name>
+    <description>1MB Helper plugin for dealing with server booster events (such as mcMMO)</description>
+
     <groupId>com.mrfloris</groupId>
     <artifactId>Boosters</artifactId>
     <version>1.0.30</version>
+
     <packaging>jar</packaging>
-
-    <name>1MB Boosters</name>
-
-    <description>1MB Helper plugin for dealing with server booster events (such as mcMMO)</description>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -56,6 +56,7 @@
             <id>spigotmc-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
         </repository>
+
         <repository>
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>
