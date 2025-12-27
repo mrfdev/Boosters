@@ -1,6 +1,6 @@
 # 1MB Boosters
 
-**This is a Helper plugin for the booster events we hold on the 1MoreBlock.com Minecraft 1.17 Java server.**
+**This is a Helper plugin for the booster events we hold on the 1MoreBlock.com Minecraft 1.21.11 Java server.**
 
 Currently, it supports mcMMO Overhaul 2.1.x, I can imagine more (see wishlist below)
 
@@ -48,4 +48,4 @@ And some suggestions from [zrips](https://github.com/zrips/) to help with improv
 
 ## Version
 
-[Tested build](https://github.com/mrfdev/Boosters/releases) Version 1.0.30, for Spigot 1.17. Last updated: June 11th 2021.
+[Tested build](https://github.com/mrfdev/Boosters/releases) Version 1.0.31, for Spigot 1.21.1. Last updated: December 27th 2025.
