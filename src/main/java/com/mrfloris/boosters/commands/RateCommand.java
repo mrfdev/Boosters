@@ -1,20 +1,21 @@
 package com.mrfloris.boosters.commands;
 
+import com.mrfloris.boosters.pluginEvents;
+import java.util.Collections;
+import java.util.List;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 
-import java.util.Collections;
-import java.util.List;
-import com.mrfloris.boosters.pluginEvents;
-import static com.mrfloris.boosters.pluginEvents.prefix;
-import static com.mrfloris.boosters.pluginEvents.isInactive;
 import static com.mrfloris.boosters.pluginEvents.isActive;
+import static com.mrfloris.boosters.pluginEvents.isInactive;
+import static com.mrfloris.boosters.pluginEvents.prefix;
 
 public class RateCommand implements CommandExecutor, TabCompleter {
 
     private final pluginEvents plugin;
+
     public RateCommand(pluginEvents plugin) {
         this.plugin = plugin;
     }

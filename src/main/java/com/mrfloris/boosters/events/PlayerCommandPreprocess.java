@@ -1,14 +1,15 @@
 package com.mrfloris.boosters.events;
 
+import com.google.common.primitives.Ints;
+import com.mrfloris.boosters.pluginEvents;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import com.google.common.primitives.Ints;
-import com.mrfloris.boosters.pluginEvents;
 
 public class PlayerCommandPreprocess implements Listener {
 
     private final pluginEvents plugin;
+
     public PlayerCommandPreprocess(pluginEvents plugin) {
         this.plugin = plugin;
     }
@@ -21,13 +22,17 @@ public class PlayerCommandPreprocess implements Listener {
         // mcmmo.commands.xprate.set
 
         String input = e.getMessage();
-        if (input.startsWith("/")){
+        if (input.startsWith("/")) {
             input = input.substring(1);
             // plugin.getLogger().info("DEBUG: before substring = \""+e.getMessage()+"\"; after = \""+input+"\"");
         }
         String[] cmd = input.split(" ");
-        if (!cmd[0].equalsIgnoreCase("xprate")) { return; }
-        if (!e.getPlayer().hasPermission("mcmmo.commands.xprate")) { return; } // not the best way, but this whole thing is hacky.
+        if (!cmd[0].equalsIgnoreCase("xprate")) {
+            return;
+        }
+        if (!e.getPlayer().hasPermission("mcmmo.commands.xprate")) {
+            return;
+        } // not the best way, but this whole thing is hacky.
         switch (cmd.length) {
             case 2:
                 if (cmd[1].equalsIgnoreCase("reset") || cmd[1].equalsIgnoreCase("clear")) {
@@ -39,7 +44,9 @@ public class PlayerCommandPreprocess implements Listener {
                     return;
                 }
                 Integer rate = Ints.tryParse(cmd[1]); // this should always exist
-                if  (rate == null) { return; }
+                if (rate == null) {
+                    return;
+                }
                 plugin.setRate(rate);
                 return;
             default: // triggers on no args (length 1), and too many (length 4+)
