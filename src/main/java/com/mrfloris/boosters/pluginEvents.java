@@ -3,39 +3,32 @@ package com.mrfloris.boosters;
 import com.mrfloris.boosters.commands.RateCommand;
 import com.mrfloris.boosters.events.PlayerCommandPreprocess;
 import com.mrfloris.boosters.events.ServerCommand;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import net.md_5.bungee.api.ChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jspecify.annotations.NonNull;
 
 public class pluginEvents extends JavaPlugin {
 
-    private static final Pattern hexColorPattern = Pattern.compile("\\{#[a-fA-F0-9]{6}}");
     public static String prefix;
     public static String isInactive;
     public static String isActive;
+    @SuppressWarnings("unused")
     public static Boolean isDebug;
     public FileConfiguration config;
     private int rate;
 
-    public String color(String msg) {
-        return color(msg, Boolean.TRUE);
+    public Component color(String msg) {
+        return color(msg, true);
     }
 
-    public String color(String msg, Boolean useHex) {
-        if (useHex) {
-            Matcher matcher = hexColorPattern.matcher(msg);
-            while (matcher.find()) {
-                String color = msg.substring(matcher.start(), matcher.end());
-                msg = msg.replace(color, ChatColor.of(color) + "");
-                matcher = hexColorPattern.matcher(msg);
-            }
-        }
-        return ChatColor.translateAlternateColorCodes('&', msg);
+    public Component color(String msg, Boolean useHex) {
+        LegacyComponentSerializer serializer = useHex ? LegacyComponentSerializer.builder().hexColors().character('&').build() : LegacyComponentSerializer.legacyAmpersand();
+        return serializer.deserialize(msg);
     }
 
     @Override
@@ -61,7 +54,6 @@ public class pluginEvents extends JavaPlugin {
                 }
             }
         }.runTaskLater(this, 180L);
-
         PluginCommand rateCommand = getCommand("rate");
         if (rateCommand == null) {
             getLogger().warning("I was expecting something but rateCommand was null.");
@@ -70,7 +62,7 @@ public class pluginEvents extends JavaPlugin {
         RateCommand rateCommandInstance = new RateCommand(this);
         rateCommand.setExecutor(rateCommandInstance);
         rateCommand.setTabCompleter(rateCommandInstance);
-        rateCommand.setUsage(color(prefix + rateCommand.getUsage()));
+        rateCommand.setUsage(colorLegacy(prefix + rateCommand.getUsage()));
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerCommandPreprocess(this), this);
         Bukkit.getServer().getPluginManager().registerEvents(new ServerCommand(this), this);
     }
@@ -86,4 +78,7 @@ public class pluginEvents extends JavaPlugin {
         // getLogger().info("DEBUG: setRate: " + rate);
     }
 
+    private @NonNull String colorLegacy(String msg) {
+        return LegacyComponentSerializer.legacyAmpersand().serialize(color(msg, true));
+    }
 }

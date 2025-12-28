@@ -5,6 +5,7 @@ import com.mrfloris.boosters.pluginEvents;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.jspecify.annotations.NonNull;
 
 public class PlayerCommandPreprocess implements Listener {
 
@@ -15,7 +16,7 @@ public class PlayerCommandPreprocess implements Listener {
     }
 
     @EventHandler
-    public void on(PlayerCommandPreprocessEvent e) {
+    public void on(@NonNull PlayerCommandPreprocessEvent e) {
         // mcmmo.commands.xprate.all
         // mcmmo.commands.xprate // probably only this one is checked for.
         // mcmmo.commands.xprate.reset

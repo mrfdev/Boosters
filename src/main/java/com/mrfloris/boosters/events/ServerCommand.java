@@ -5,6 +5,7 @@ import com.mrfloris.boosters.pluginEvents;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerCommandEvent;
+import org.jspecify.annotations.NonNull;
 
 public class ServerCommand implements Listener {
 
@@ -15,7 +16,7 @@ public class ServerCommand implements Listener {
     }
 
     @EventHandler
-    public void on(ServerCommandEvent e) {
+    public void on(@NonNull ServerCommandEvent e) {
         /*
             cmd length 1 - invalid
             cmd length 2
