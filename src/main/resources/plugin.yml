@@ -1,14 +1,14 @@
-name: ${project.artifactId}
+name: 1MB_Boosters
 version: ${project.version}
-api-version: 1.17
+api-version: 1.21.11
 main: com.mrfloris.boosters.pluginEvents
 author: mrfloris
-authors: [Anonymous, smeths, zrips, the456gamer]
+authors: [ Anonymous, smeths, zrips, the456gamer ]
 website: https://github.com/mrfdev/Boosters
 description: 1MB Helper plugin for dealing with server booster events
 prefix: ${project.name}
-softdepend: [mcMMO]
+softdepend: [ mcMMO ]
 commands:
-    rate:
-        usage: "Usage: /&l<command>"
-        description: Displays if there currently are any ongoing server booster events
+  rate:
+    usage: "Usage: /&l<command>"
+    description: Displays if there currently are any ongoing server booster events

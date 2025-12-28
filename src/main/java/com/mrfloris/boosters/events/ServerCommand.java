@@ -1,20 +1,22 @@
 package com.mrfloris.boosters.events;
 
+import com.google.common.primitives.Ints;
+import com.mrfloris.boosters.pluginEvents;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerCommandEvent;
-import com.google.common.primitives.Ints;
-import com.mrfloris.boosters.pluginEvents;
+import org.jspecify.annotations.NonNull;
 
 public class ServerCommand implements Listener {
 
     private final pluginEvents plugin;
+
     public ServerCommand(pluginEvents plugin) {
         this.plugin = plugin;
     }
 
     @EventHandler
-    public void on(ServerCommandEvent e) {
+    public void on(@NonNull ServerCommandEvent e) {
         /*
             cmd length 1 - invalid
             cmd length 2
@@ -26,7 +28,9 @@ public class ServerCommand implements Listener {
 
          */
         String[] cmd = e.getCommand().split(" ");
-        if (!cmd[0].equalsIgnoreCase("xprate")) { return; }
+        if (!cmd[0].equalsIgnoreCase("xprate")) {
+            return;
+        }
         switch (cmd.length) {
             case 2:
                 if (cmd[1].equalsIgnoreCase("reset") || cmd[1].equalsIgnoreCase("clear")) {
@@ -38,7 +42,9 @@ public class ServerCommand implements Listener {
                     return;
                 }
                 Integer rate = Ints.tryParse(cmd[1]); // this should always exist
-                if  (rate == null) { return; }
+                if (rate == null) {
+                    return;
+                }
                 plugin.setRate(rate);
                 return;
             default: // triggers on no args (length 1), and too many (length 4+)
