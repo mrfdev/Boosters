@@ -1,4 +1,21 @@
-mcmmo-rate: 1
-prefix: "&3 1MB Server »&7 "
-active-msg: "A Booster event is active right now! Rate: &f&l{rate}&r&3x &7mcMMO"
-inactive-msg: "There is currently no Booster event active."
+# Boosters configuration
+#
+# This plugin stores booster state and will try to restore it on server start.
+
+restore:
+  delayTicks: 40   # Delay after server start before replaying commands
+
+mcmmo:
+  enabled: true
+  # Updated automatically when /xprate or /mcxprate is used
+  activeRate: 1.0
+  activeAnnounce: false  # Updated automatically if /xprate <rate> <true|false> is used
+
+jobs:
+  enabled: true
+  # Updated automatically when /jobs boost ... is used
+  # Stored end timestamps are epoch millis.
+  stored:
+    commandBase: "jobs boost all exp"  # informational; actual stored commands are below
+    multiplier: 1.0
+    endAtEpochMillis: 0
