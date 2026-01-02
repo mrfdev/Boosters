@@ -4,7 +4,7 @@
 
 Currently, it supports mcMMO Overhaul 2.1.x, I can imagine more (see wishlist below)
 
-The purpose of this plugin is two-fold:
+The purpose of this plugin is two-fold: 
 
 First, it will try to keep track of ongoing server (mcMMO /xprate) events, so when the server restarts it will try to
 automatically start it back up again.
