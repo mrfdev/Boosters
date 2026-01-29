@@ -1,7 +1,7 @@
 name: Boosters
 main: com.mrfdev.boosters.Boosters
 version: ${version}
-api-version: '1.20'
+api-version: '1.21.11'
 author: mrfloris
 website: https://github.com/mrfdev/Boosters
 description: Persist and restore server-wide booster events (mcMMO xprate, Jobs Reborn boosts) across restarts.

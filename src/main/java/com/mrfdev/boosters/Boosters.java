@@ -1,24 +1,68 @@
 package com.mrfdev.boosters;
 
+import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import org.jspecify.annotations.NonNull;
 
 public final class Boosters extends JavaPlugin implements Listener {
 
-    private static final Pattern DURATION_PATTERN = Pattern.compile("(?i)(\\d+)(d|h|m|s)");
+    private static final Pattern DURATION_PATTERN = Pattern.compile("(?i)(\\d+)([dhms])");
+
+    private static long parseDurationSeconds(String input) {
+        if (input == null) return 0;
+        String s = input.trim();
+        Matcher m = DURATION_PATTERN.matcher(s);
+        long total = 0;
+        int matches = 0;
+        while (m.find()) {
+            matches++;
+            long value = Long.parseLong(m.group(1));
+            String unit = m.group(2).toLowerCase(Locale.ROOT);
+            switch (unit) {
+                case "d" -> total += value * 86400L;
+                case "h" -> total += value * 3600L;
+                case "m" -> total += value * 60L;
+                case "s" -> total += value;
+            }
+        }
+        return matches == 0 ? 0 : total;
+    }
+
+    private static @NonNull String formatDuration(long seconds) {
+        if (seconds <= 0) return "1s";
+        long d = seconds / 86400L;
+        seconds %= 86400L;
+        long h = seconds / 3600L;
+        seconds %= 3600L;
+        long m = seconds / 60L;
+        seconds %= 60L;
+        long s = seconds;
+        StringBuilder sb = new StringBuilder();
+        if (d > 0) sb.append(d).append('d');
+        if (h > 0) sb.append(h).append('h');
+        if (m > 0) sb.append(m).append('m');
+        if (s > 0 || sb.isEmpty()) sb.append(s).append('s');
+        return sb.toString();
+    }
+
+    private static @NonNull String stripTrailingZeros(double d) {
+        String s = Double.toString(d);
+        if (s.contains(".")) {
+            s = s.replaceAll("0+$", "").replaceAll("\\.$", "");
+        }
+        return s;
+    }
 
     @Override
     public void onEnable() {
@@ -70,12 +114,12 @@ public final class Boosters extends JavaPlugin implements Listener {
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onPlayerCommand(PlayerCommandPreprocessEvent event) {
+    public void onPlayerCommand(@NonNull PlayerCommandPreprocessEvent event) {
         handleCommand(event.getMessage());
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onServerCommand(ServerCommandEvent event) {
+    public void onServerCommand(@NonNull ServerCommandEvent event) {
         handleCommand("/" + event.getCommand());
     }
 
@@ -94,7 +138,7 @@ public final class Boosters extends JavaPlugin implements Listener {
         }
     }
 
-    private void handleMcMMO(String cmd) {
+    private void handleMcMMO(@NonNull String cmd) {
         // Syntax (mcMMO 2.x): /xprate <rate> <true|false>  OR /xprate reset
         // We store both the multiplier and the boolean flag so we can replay the exact command after restart.
         String[] parts = cmd.split("\\s+");
@@ -122,18 +166,14 @@ public final class Boosters extends JavaPlugin implements Listener {
                 announce = getConfig().getBoolean("mcmmo.activeAnnounce", false);
             }
 
-            if (rate <= 1.0) {
-                getConfig().set("mcmmo.activeRate", 1.0);
-            } else {
-                getConfig().set("mcmmo.activeRate", rate);
-            }
+            getConfig().set("mcmmo.activeRate", Math.max(rate, 1.0));
             getConfig().set("mcmmo.activeAnnounce", announce);
             saveConfig();
         } catch (NumberFormatException ignored) {
         }
     }
 
-    private void handleJobs(String cmd) {
+    private void handleJobs(@NonNull String cmd) {
         // We care about: jobs boost <job|all> <exp|money|points|all> <duration> <multiplier>
         // Example: jobs boost all exp 1h10m20s 2
         String[] parts = cmd.split("\\s+");
@@ -175,50 +215,8 @@ public final class Boosters extends JavaPlugin implements Listener {
         saveConfig();
     }
 
-    private static long parseDurationSeconds(String input) {
-        if (input == null) return 0;
-        String s = input.trim();
-        Matcher m = DURATION_PATTERN.matcher(s);
-        long total = 0;
-        int matches = 0;
-        while (m.find()) {
-            matches++;
-            long value = Long.parseLong(m.group(1));
-            String unit = m.group(2).toLowerCase(Locale.ROOT);
-            switch (unit) {
-                case "d" -> total += value * 86400L;
-                case "h" -> total += value * 3600L;
-                case "m" -> total += value * 60L;
-                case "s" -> total += value;
-            }
-        }
-        return matches == 0 ? 0 : total;
-    }
-
-    private static String formatDuration(long seconds) {
-        if (seconds <= 0) return "1s";
-        long d = seconds / 86400L; seconds %= 86400L;
-        long h = seconds / 3600L; seconds %= 3600L;
-        long m = seconds / 60L; seconds %= 60L;
-        long s = seconds;
-        StringBuilder sb = new StringBuilder();
-        if (d > 0) sb.append(d).append('d');
-        if (h > 0) sb.append(h).append('h');
-        if (m > 0) sb.append(m).append('m');
-        if (s > 0 || sb.length() == 0) sb.append(s).append('s');
-        return sb.toString();
-    }
-
-    private static String stripTrailingZeros(double d) {
-        String s = Double.toString(d);
-        if (s.contains(".")) {
-            s = s.replaceAll("0+$", "").replaceAll("\\.$", "");
-        }
-        return s;
-    }
-
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(@NonNull CommandSender sender, @NonNull Command command, @NonNull String label, String @NonNull [] args) {
         if (!command.getName().equalsIgnoreCase("rate")) return false;
 
         double mcmmoRate = getConfig().getDouble("mcmmo.activeRate", 1.0);
