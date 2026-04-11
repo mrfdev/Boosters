@@ -1,4 +1,4 @@
-name: Boosters
+name: 1MB-Boosters
 main: com.mrfdev.boosters.Boosters
 version: ${version}
 api-version: '1.21.11'
