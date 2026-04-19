@@ -3,7 +3,7 @@
 `Boosters` is a helper plugin for 1MoreBlock.com that tracks server-wide boosters from [mcMMO](https://github.com/mcMMO-Dev/mcMMO) and [Jobs Reborn](https://github.com/Zrips/Jobs), restores them after a restart, and gives players a clean `/rate` command to check the current status.
 
 Version: `1.2.1`  
-Build: `023`  
+Build: `024`  
 Updated: `2026-04-19`
 
 ## What it does
@@ -22,7 +22,7 @@ Updated: `2026-04-19`
 - Built with Java `25`.
 - Compiled against the Paper API for `1.21.11`.
 - Intended for Paper `1.21.11` and newer Paper `26.x` servers that are running on Java `25`.
-- The built jar is named `1MB-Boosters-v1.2.1-023-j25-1.21.11.jar`.
+- The built jar is named `1MB-Boosters-v1.2.1-024-j25-1.21.11.jar`.
 - The plugin data folder is `plugins/1MB-Boosters/`.
 
 If you run this exact build on a server that still uses Java `21`, the plugin will not load because the bytecode target is Java `25`.
@@ -78,7 +78,7 @@ Internally, that runs `/jobs boost all all <time> <rate>`.
 
 ### Admin commands
 
-- `/rate start <all|mcmmo|jobs> <time> <rate>`
+- `/rate start <mcmmo|jobs|all> <time> <rate>`
   Starts tracked boosters. `all` starts the same timed/rated booster for both mcMMO and Jobs. For mcMMO this creates a timed booster managed by Boosters. For Jobs this starts a global all/all booster.
 - `/rate stop <mcmmo|jobs|all>`
   Stops one tracked booster or both.
@@ -90,10 +90,10 @@ If `/rate start` or `/rate stop` is used without enough arguments, the plugin sh
 ## Command examples
 
 - `/rate`
-- `/rate start all 1h 2`
 - `/rate start mcmmo 1h 2`
-- `/rate start mcmmo 2h30m 3`
 - `/rate start jobs 30m 2`
+- `/rate start all 1h 2`
+- `/rate start mcmmo 2h30m 3`
 - `/rate start jobs 1h 2.5`
 - `/rate stop mcmmo`
 - `/rate stop jobs`
@@ -155,11 +155,13 @@ If you upgrade from an older release that used `plugins/Boosters/` or `plugins/b
 
 - Gradle targets Java `25`.
 - The plugin is compiled against `io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT`.
-- Current release metadata: version `1.2.1`, build `023`.
+- Current release metadata: version `1.2.1`, build `024`.
 - PlaceholderAPI support is included as an optional dependency and is intended to work with newer PlaceholderAPI builds, including the `2.12.3-DEV-265` line you referenced for your server.
 
 ## Credits
 
 - [nossr50](https://github.com/nossr50) and the mcMMO team for [mcMMO](https://github.com/mcMMO-Dev/mcMMO)
 - [Zrips](https://github.com/Zrips) for [Jobs Reborn](https://github.com/Zrips/Jobs)
+- [xsmeths](https://github.com/xsmeths) for logic fixes and helpful review on booster output behavior
+- [The456gamer](https://github.com/the456gamer) for additional contributions and improvements
 - Everyone who helped shape the original idea and later fixes for this plugin

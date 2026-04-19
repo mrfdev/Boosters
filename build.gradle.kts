@@ -1,6 +1,6 @@
 val pluginName = "1MB-Boosters"
 val pluginVersion = "1.2.1"
-val buildNumber = "023"
+val buildNumber = "024"
 val targetJavaVersion = 25
 val targetMinecraftVersion = "1.21.11"
 val artifactFileName = "${pluginName}-v${pluginVersion}-${buildNumber}-j${targetJavaVersion}-${targetMinecraftVersion}.jar"

@@ -25,7 +25,7 @@ import java.util.Optional;
 public final class RateCommand implements TabExecutor {
 
     private static final List<String> ROOT_ARGUMENTS = List.of("start", "stop", "debug");
-    private static final List<String> START_TARGETS = List.of("all", "mcmmo", "jobs");
+    private static final List<String> START_TARGETS = List.of("mcmmo", "jobs", "all");
     private static final List<String> STOP_TARGETS = List.of("mcmmo", "jobs", "all");
     private static final List<String> DEBUG_PAGES = List.of("1", "2");
     private static final List<String> COMMON_DURATIONS = List.of("15m", "30m", "1h", "2h");
@@ -315,7 +315,7 @@ public final class RateCommand implements TabExecutor {
         messageService.prefixed(sender, "<gray>Usage:</gray>");
         messageService.send(sender, "<yellow>/rate</yellow><gray> - Show the current booster status.</gray>");
         messageService.send(sender,
-                "<yellow>/rate start [all|mcmmo|jobs] [time] [rate]</yellow><gray> - Start tracked boosters.</gray>");
+                "<yellow>/rate start [mcmmo|jobs|all] [time] [rate]</yellow><gray> - Start tracked boosters.</gray>");
         messageService.send(sender,
                 "<yellow>/rate stop [mcmmo|jobs|all]</yellow><gray> - Stop tracked boosters.</gray>");
         messageService.send(sender,
@@ -323,8 +323,8 @@ public final class RateCommand implements TabExecutor {
     }
 
     private void sendStartSynopsis(CommandSender sender) {
-        messageService.prefixed(sender, "<gray>Usage: <yellow>/rate start [all|mcmmo|jobs] [time] [rate]</yellow></gray>");
-        messageService.send(sender, "<gray>Examples: <yellow>/rate start all 1h 2</yellow>, <yellow>/rate start mcmmo 1h 2</yellow>, and <yellow>/rate start jobs 30m 2.5</yellow></gray>");
+        messageService.prefixed(sender, "<gray>Usage: <yellow>/rate start [mcmmo|jobs|all] [time] [rate]</yellow></gray>");
+        messageService.send(sender, "<gray>Examples: <yellow>/rate start mcmmo 1h 2</yellow>, <yellow>/rate start jobs 30m 2.5</yellow>, and <yellow>/rate start all 1h 2</yellow></gray>");
     }
 
     private void sendStopSynopsis(CommandSender sender) {
@@ -427,7 +427,7 @@ public final class RateCommand implements TabExecutor {
         messageService.prefixed(sender, "<gray>Debug page <yellow>2/2</yellow>: commands, permissions, and placeholders.</gray>");
         messageService.send(sender, "<yellow>Commands</yellow><gray>:</gray>");
         messageService.send(sender, "<white>/rate</white><gray> - Show the current booster status.</gray>");
-        messageService.send(sender, "<white>/rate start [all|mcmmo|jobs] [time] [rate]</white><gray> - Start tracked boosters.</gray>");
+        messageService.send(sender, "<white>/rate start [mcmmo|jobs|all] [time] [rate]</white><gray> - Start tracked boosters.</gray>");
         messageService.send(sender, "<white>/rate stop [mcmmo|jobs|all]</white><gray> - Stop tracked boosters.</gray>");
         messageService.send(sender, "<white>/rate debug [1|2]</white><gray> - Show plugin diagnostics.</gray>");
 
