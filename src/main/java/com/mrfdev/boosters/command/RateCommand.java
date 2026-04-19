@@ -459,35 +459,35 @@ public final class RateCommand implements TabExecutor {
 
         messageService.send(sender, "<yellow>PlaceholderAPI placeholders</yellow><gray>:</gray>");
         sendClickableDebugEntry(sender,
-                "%onemb_boosters_mcmmo_active%",
+                "%onembboosters_mcmmo_active%",
                 "Returns Yes or No.",
                 "Click to copy this placeholder");
         sendClickableDebugEntry(sender,
-                "%onemb_boosters_mcmmo_rate%",
+                "%onembboosters_mcmmo_rate%",
                 "Returns the tracked mcMMO rate, such as 2 or 2.5.",
                 "Click to copy this placeholder");
         sendClickableDebugEntry(sender,
-                "%onemb_boosters_mcmmo_time%",
+                "%onembboosters_mcmmo_time%",
                 "Returns the original tracked mcMMO duration, or Manual for a direct native /xprate.",
                 "Click to copy this placeholder");
         sendClickableDebugEntry(sender,
-                "%onemb_boosters_mcmmo_timeleft%",
+                "%onembboosters_mcmmo_timeleft%",
                 "Returns the remaining tracked mcMMO time, or Manual for a direct native /xprate.",
                 "Click to copy this placeholder");
         sendClickableDebugEntry(sender,
-                "%onemb_boosters_jobs_active%",
+                "%onembboosters_jobs_active%",
                 "Returns Yes or No.",
                 "Click to copy this placeholder");
         sendClickableDebugEntry(sender,
-                "%onemb_boosters_jobs_rate%",
+                "%onembboosters_jobs_rate%",
                 "Returns the tracked Jobs rate, such as 2 or 2.5.",
                 "Click to copy this placeholder");
         sendClickableDebugEntry(sender,
-                "%onemb_boosters_jobs_time%",
+                "%onembboosters_jobs_time%",
                 "Returns the original tracked Jobs duration.",
                 "Click to copy this placeholder");
         sendClickableDebugEntry(sender,
-                "%onemb_boosters_jobs_timeleft%",
+                "%onembboosters_jobs_timeleft%",
                 "Returns the remaining tracked Jobs time.",
                 "Click to copy this placeholder");
         messageService.send(sender, "<gray>Inactive boosters return <yellow>1</yellow> for rate and <yellow>None</yellow> for time values.</gray>");

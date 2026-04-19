@@ -2,8 +2,8 @@
 
 `Boosters` is a helper plugin for 1MoreBlock.com that tracks server-wide boosters from [mcMMO](https://github.com/mcMMO-Dev/mcMMO) and [Jobs Reborn](https://github.com/Zrips/Jobs), restores them after a restart, and gives players a clean `/rate` command to check the current status.
 
-Version: `1.2.1`  
-Build: `024`  
+Version: `1.2.2`  
+Build: `025`  
 Updated: `2026-04-19`
 
 ## What it does
@@ -22,7 +22,7 @@ Updated: `2026-04-19`
 - Built with Java `25`.
 - Compiled against the Paper API for `1.21.11`.
 - Intended for Paper `1.21.11` and newer Paper `26.x` servers that are running on Java `25`.
-- The built jar is named `1MB-Boosters-v1.2.1-024-j25-1.21.11.jar`.
+- The built jar is named `1MB-Boosters-v1.2.2-025-j25-1.21.11.jar`.
 - The plugin data folder is `plugins/1MB-Boosters/`.
 
 If you run this exact build on a server that still uses Java `21`, the plugin will not load because the bytecode target is Java `25`.
@@ -114,21 +114,21 @@ If `/rate start` or `/rate stop` is used without enough arguments, the plugin sh
 
 Boosters registers the PlaceholderAPI identifier:
 
-- `%onemb_boosters_mcmmo_active%`
+- `%onembboosters_mcmmo_active%`
   Returns `Yes` or `No` depending on whether the tracked mcMMO booster is active.
-- `%onemb_boosters_mcmmo_rate%`
+- `%onembboosters_mcmmo_rate%`
   Returns the tracked mcMMO rate without the `x`, for example `2` or `2.5`.
-- `%onemb_boosters_mcmmo_time%`
+- `%onembboosters_mcmmo_time%`
   Returns the original tracked mcMMO duration. If mcMMO was started directly with native `/xprate` and no timer is known, this returns `Manual`.
-- `%onemb_boosters_mcmmo_timeleft%`
+- `%onembboosters_mcmmo_timeleft%`
   Returns the remaining tracked mcMMO duration. If mcMMO was started directly with native `/xprate` and no timer is known, this returns `Manual`.
-- `%onemb_boosters_jobs_active%`
+- `%onembboosters_jobs_active%`
   Returns `Yes` or `No` depending on whether the tracked Jobs booster is active.
-- `%onemb_boosters_jobs_rate%`
+- `%onembboosters_jobs_rate%`
   Returns the tracked Jobs rate without the `x`, for example `2` or `2.5`.
-- `%onemb_boosters_jobs_time%`
+- `%onembboosters_jobs_time%`
   Returns the original tracked Jobs duration.
-- `%onemb_boosters_jobs_timeleft%`
+- `%onembboosters_jobs_timeleft%`
   Returns the remaining tracked Jobs duration.
 
 When a booster is not active:
@@ -155,7 +155,7 @@ If you upgrade from an older release that used `plugins/Boosters/` or `plugins/b
 
 - Gradle targets Java `25`.
 - The plugin is compiled against `io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT`.
-- Current release metadata: version `1.2.1`, build `024`.
+- Current release metadata: version `1.2.2`, build `025`.
 - PlaceholderAPI support is included as an optional dependency and is intended to work with newer PlaceholderAPI builds, including the `2.12.3-DEV-265` line you referenced for your server.
 
 ## Credits

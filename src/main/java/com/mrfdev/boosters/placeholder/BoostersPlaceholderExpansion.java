@@ -27,7 +27,7 @@ public final class BoostersPlaceholderExpansion extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getIdentifier() {
-        return "onemb_boosters";
+        return "onembboosters";
     }
 
     @Override
