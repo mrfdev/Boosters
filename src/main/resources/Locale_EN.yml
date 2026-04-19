@@ -1,0 +1,15 @@
+# 1MB Boosters locale file
+#
+# This file contains translatable wording and MiniMessage styles for
+# player-facing output. Structural settings and feature toggles stay in config.yml.
+
+prefix: "<gold>[Boosters]</gold> "
+
+rate:
+  header: "<gray>Current booster status:</gray>"
+  inactive: "<red>No booster active.</red>"
+  active-no-end: "<green>Active</green><gray> at <aqua><rate>x</aqua>. No tracked end time.</gray>"
+  active-timed: "<green>Active</green><gray> at <aqua><rate>x</aqua> for <aqua><duration></aqua>, <aqua><remaining></aqua> left.</gray>"
+  jobs-active-timed: "<green>Active</green><gray> (<aqua><scope></aqua>) at <aqua><rate>x</aqua> for <aqua><duration></aqua>, <aqua><remaining></aqua> left.</gray>"
+  points-active-timed: "<green>Active</green><gray> at <aqua><rate>x</aqua> for <aqua><duration></aqua>, <aqua><remaining></aqua> left. Current values: <aqua><ingame></aqua> in-game, <aqua><discord></aqua> Discord.</gray>"
+  hidden-experimental: "<gray>Hidden experimental integration. Admin-only view.</gray>"

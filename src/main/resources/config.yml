@@ -1,15 +1,112 @@
 # 1MB Boosters configuration
 #
-# Runtime booster data is stored in booster-state.yml.
-# This file is for settings only.
+# Runtime booster state is stored in booster-state.yml.
+# This file only stores settings, feature toggles, labels, tab completion values,
+# and integration paths/commands.
+
+locale:
+  file: "Locale_EN.yml" # Bundled locale file to use for player-facing wording
 
 restore:
   delayTicks: 60 # Delay after startup before Boosters restores tracked boosters
 
+features:
+  mcmmo:
+    enabled: true # Enable or disable mcMMO tracking and /rate integration
+  jobs:
+    enabled: true # Enable or disable Jobs tracking and /rate integration
+  points:
+    enabled: true       # Enable the experimental PyroWelcomesPro points integration
+    visible: false      # Show points in normal player /rate output, public placeholders, and /rate start|stop all
+    experimental: true  # Mark points as experimental in debug/admin output
+
+display:
+  adminShowExperimentalIntegrations: true # Let admins see hidden experimental integrations in /rate while keeping them hidden from normal players
+  sections:
+    mcmmo: true
+    jobs: true
+    points: true
+  labels:
+    mcmmo: "<yellow>mcMMO</yellow>"
+    jobs: "<yellow>Jobs</yellow>"
+    points: "<yellow>Points</yellow>"
+
+tabCompletion:
+  commonDurations:
+    - "15m"
+    - "30m"
+    - "1h"
+    - "2h"
+    - "3h"
+  commonRates:
+    - "2"
+    - "2.5"
+    - "3"
+    - "4"
+
+logging:
+  auditToConsole: true # Log tracked start/stop/restore actions to the server console
+  recentActionLimit: 25 # In-memory entries shown by /rate debug logs
+
+# Command hooks run as console commands after a booster starts or stops.
+# They also run for tracked native mcMMO/Jobs commands and for timed expiry stops.
+# Leave a list empty to disable it.
+# Leading slashes are optional.
+# Boosters does not MiniMessage-parse these commands; they are sent raw so the target plugin can interpret colors/placeholders itself.
+# Available placeholders:
+# {phase} {booster} {booster_key} {booster_label} {rate}
+# {duration} {duration_compact} {remaining} {remaining_compact}
+# {sender} {jobs_target} {jobs_scope} {ingame} {discord}
+# Example start commands:
+# - "cmi broadcast Booster {booster} {rate}x started for {duration} by {sender}"
+# - "cmi titlemsg all Booster Started \\n {booster} {rate}x for {duration}"
+# Example stop commands:
+# - "cmi broadcast Booster {booster} stopped by {sender}"
+# - "cmi titlemsg all Booster Stopped \\n {booster} ended after {duration}"
+commandHooks:
+  start:
+    global:
+      - "cmi broadcast Booster {booster} {rate}x started for {duration} by {sender}"
+      - "cmi titlemsg all Booster Started \\n {booster} {rate}x for {duration}"
+    mcmmo: []
+    jobs: []
+    points: []
+  stop:
+    global:
+      - "cmi broadcast Booster {booster} stopped by {sender}"
+      - "cmi titlemsg all Booster Stopped \\n {booster} ended after {duration}"
+    mcmmo: []
+    jobs: []
+    points: []
+
+# Broadcast templates use MiniMessage.
+# Leave a value blank to disable that broadcast line.
+# Available placeholders:
+# <booster> <rate> <duration> <sender> <ingame> <discord>
+broadcasts:
+  start:
+    global: ""
+    mcmmo: "<gold>[Boosters]</gold> <yellow>mcMMO</yellow> has started at <aqua><rate>x</aqua> for <aqua><duration></aqua><gray> by <white><sender></white>.</gray>"
+    jobs: "<gold>[Boosters]</gold> <yellow>Jobs</yellow> has started at <aqua><rate>x</aqua> for <aqua><duration></aqua><gray> by <white><sender></white>.</gray>"
+    points: "<gold>[Boosters]</gold> <yellow>Points</yellow> has started at <aqua><rate>x</aqua> for <aqua><duration></aqua><gray> by <white><sender></white>. Values: <aqua><ingame></aqua> in-game, <aqua><discord></aqua> Discord.</gray>"
+  stop:
+    global: ""
+    mcmmo: "<gold>[Boosters]</gold> <yellow>mcMMO</yellow> has been stopped<gray> by <white><sender></white>.</gray>"
+    jobs: "<gold>[Boosters]</gold> <yellow>Jobs</yellow> has been stopped<gray> by <white><sender></white>.</gray>"
+    points: "<gold>[Boosters]</gold> <yellow>Points</yellow> has been stopped<gray> by <white><sender></white>.</gray>"
+
 mcmmo:
-  enabled: true
-  announceOnRateStart: true   # Used when /rate start mcmmo ... starts a booster
-  announceOnRestore: false    # If true, restored mcMMO boosters will announce again
+  announceOnRateStart: true # Used when /rate start mcmmo ... starts a booster
+  announceOnRestore: false  # If true, restored mcMMO boosters will announce again
 
 jobs:
-  enabled: true
+  enabledNote: "Jobs behavior is controlled by features.jobs.enabled above."
+
+points:
+  pluginName: "PyroWelcomesPro" # Bukkit plugin name used for dependency detection
+  configFile: "PyroWelcomesPro/config.yml" # Relative to the plugins folder
+  reloadCommand: "welcomes reload" # Console command Boosters will run after writing config.yml
+  ingamePath: "Settings.EarnablePoints" # YAML path for in-game welcome points
+  discordPath: "Settings.DiscordSRV.EarnablePoints" # YAML path for Discord welcome points
+  baseIngamePoints: 2 # Base in-game points when no points booster is active
+  baseDiscordPoints: 1 # Base Discord points when no points booster is active

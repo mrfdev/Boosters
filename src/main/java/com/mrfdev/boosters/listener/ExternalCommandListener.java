@@ -21,15 +21,15 @@ public final class ExternalCommandListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerCommand(PlayerCommandPreprocessEvent event) {
-        handleRawCommand(event.getMessage());
+        handleRawCommand(event.getMessage(), event.getPlayer().getName());
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onServerCommand(ServerCommandEvent event) {
-        handleRawCommand('/' + event.getCommand());
+        handleRawCommand('/' + event.getCommand(), "Console");
     }
 
-    private void handleRawCommand(String raw) {
+    private void handleRawCommand(String raw, String senderName) {
         if (raw == null || raw.isBlank()) {
             return;
         }
@@ -42,23 +42,23 @@ public final class ExternalCommandListener implements Listener {
 
         String root = parts[0].toLowerCase(Locale.ROOT);
         if (root.equals("xprate") || root.equals("mcxprate")) {
-            trackMcMMO(parts);
+            trackMcMMO(parts, senderName);
             return;
         }
 
         if (root.equals("jobs")) {
-            trackJobs(parts);
+            trackJobs(parts, senderName);
         }
     }
 
-    private void trackMcMMO(String[] parts) {
+    private void trackMcMMO(String[] parts, String senderName) {
         if (parts.length < 2) {
             return;
         }
 
         String action = parts[1].toLowerCase(Locale.ROOT);
         if (action.equals("reset")) {
-            boosterService.recordExternalMcMMOReset();
+            boosterService.recordExternalMcMMOReset(senderName);
             return;
         }
 
@@ -77,16 +77,16 @@ public final class ExternalCommandListener implements Listener {
             }
         }
 
-        boosterService.recordExternalMcMMOBoost(rate, announce);
+        boosterService.recordExternalMcMMOBoost(rate, announce, senderName);
     }
 
-    private void trackJobs(String[] parts) {
+    private void trackJobs(String[] parts, String senderName) {
         if (parts.length < 3 || !parts[1].equalsIgnoreCase("boost")) {
             return;
         }
 
         if (parts.length >= 4 && parts[2].equalsIgnoreCase("all") && parts[3].equalsIgnoreCase("reset")) {
-            boosterService.recordExternalJobsReset();
+            boosterService.recordExternalJobsReset(senderName);
             return;
         }
 
@@ -108,6 +108,6 @@ public final class ExternalCommandListener implements Listener {
             return;
         }
 
-        boosterService.recordExternalJobsBoost(target, scope, durationMillis, rate);
+        boosterService.recordExternalJobsBoost(target, scope, durationMillis, rate, senderName);
     }
 }

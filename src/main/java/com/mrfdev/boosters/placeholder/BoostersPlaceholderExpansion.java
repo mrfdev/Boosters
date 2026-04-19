@@ -63,12 +63,26 @@ public final class BoostersPlaceholderExpansion extends PlaceholderExpansion {
             return null;
         }
 
-        BoosterState state = boosterService.getState(optionalType.get());
+        BoosterType type = optionalType.get();
+        if (type == BoosterType.POINTS && !boosterService.shouldExposePointsPlaceholders()) {
+            return hiddenFallback(parts[1]);
+        }
+
+        BoosterState state = boosterService.getState(type);
         return switch (parts[1]) {
             case "active" -> state.active() ? "Yes" : "No";
             case "rate" -> state.active() ? NumberUtil.formatRate(state.rate()) : "1";
             case "time" -> formatDurationValue(state, false);
             case "timeleft" -> formatDurationValue(state, true);
+            default -> null;
+        };
+    }
+
+    private String hiddenFallback(String parameter) {
+        return switch (parameter) {
+            case "active" -> "No";
+            case "rate" -> "1";
+            case "time", "timeleft" -> "None";
             default -> null;
         };
     }

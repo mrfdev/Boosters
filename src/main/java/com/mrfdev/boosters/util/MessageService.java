@@ -8,12 +8,17 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public final class MessageService {
 
-    private static final String PREFIX = "<gold>[Boosters]</gold> ";
+    private static final String FALLBACK_PREFIX = "<gold>[Boosters]</gold> ";
 
+    private final LocaleService localeService;
     private final MiniMessage miniMessage = MiniMessage.miniMessage();
 
+    public MessageService(LocaleService localeService) {
+        this.localeService = localeService;
+    }
+
     public void prefixed(CommandSender sender, String message, TagResolver... resolvers) {
-        send(sender, PREFIX + message, resolvers);
+        send(sender, prefix() + message, resolvers);
     }
 
     public void send(CommandSender sender, String message, TagResolver... resolvers) {
@@ -26,5 +31,9 @@ public final class MessageService {
 
     public static TagResolver value(String key, String value) {
         return Placeholder.unparsed(key, value == null ? "" : value);
+    }
+
+    private String prefix() {
+        return localeService.get("prefix", FALLBACK_PREFIX);
     }
 }

@@ -4,8 +4,10 @@ import com.mrfdev.boosters.command.RateCommand;
 import com.mrfdev.boosters.listener.ExternalCommandListener;
 import com.mrfdev.boosters.placeholder.BoostersPlaceholderExpansion;
 import com.mrfdev.boosters.service.BoosterService;
+import com.mrfdev.boosters.service.PyroWelcomesPointsProvider;
 import com.mrfdev.boosters.storage.BoosterStateStorage;
 import com.mrfdev.boosters.util.BuildInfo;
+import com.mrfdev.boosters.util.LocaleService;
 import com.mrfdev.boosters.util.MessageService;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
@@ -23,6 +25,8 @@ public final class Boosters extends JavaPlugin {
     private BoosterService boosterService;
     private BoostersPlaceholderExpansion placeholderExpansion;
     private BuildInfo buildInfo;
+    private LocaleService localeService;
+    private MessageService messageService;
 
     @Override
     public void onEnable() {
@@ -30,11 +34,13 @@ public final class Boosters extends JavaPlugin {
         saveDefaultConfig();
 
         buildInfo = BuildInfo.load(this);
-        MessageService messageService = new MessageService();
+        localeService = new LocaleService(this);
+        messageService = new MessageService(localeService);
         BoosterStateStorage storage = new BoosterStateStorage(this);
-        boosterService = new BoosterService(this, storage, messageService);
+        PyroWelcomesPointsProvider pointsProvider = new PyroWelcomesPointsProvider(this);
+        boosterService = new BoosterService(this, storage, messageService, pointsProvider, localeService);
 
-        RateCommand rateCommand = new RateCommand(this, buildInfo, boosterService, messageService);
+        RateCommand rateCommand = new RateCommand(this, buildInfo, boosterService, messageService, localeService);
         PluginCommand rate = Objects.requireNonNull(getCommand("rate"), "The /rate command is missing from plugin.yml");
         rate.setExecutor(rateCommand);
         rate.setTabCompleter(rateCommand);
@@ -47,6 +53,7 @@ public final class Boosters extends JavaPlugin {
             messageService.info(this, "<gray>PlaceholderAPI support has been enabled.</gray>");
         }
 
+        boosterService.logStartupSelfCheck();
         long delay = Math.max(1L, getConfig().getLong("restore.delayTicks", 60L));
         Bukkit.getScheduler().runTaskLater(this, boosterService::restoreTrackedBoosters, delay);
         messageService.info(this, "<gray>Booster tracking is ready. Restore check runs in <yellow><delay></yellow>.</gray>",
@@ -63,6 +70,16 @@ public final class Boosters extends JavaPlugin {
         if (boosterService != null) {
             boosterService.shutdown();
             boosterService = null;
+        }
+    }
+
+    public void reloadRuntimeConfiguration() {
+        reloadConfig();
+        if (localeService != null) {
+            localeService.reload();
+        }
+        if (boosterService != null) {
+            boosterService.reloadRuntimeSettings();
         }
     }
 

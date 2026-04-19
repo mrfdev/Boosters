@@ -14,4 +14,8 @@ public final class NumberUtil {
     public static double parseRate(String input) {
         return Double.parseDouble(input.trim().replace(',', '.'));
     }
+
+    public static boolean isWholeNumber(double value) {
+        return Math.floor(value) == value;
+    }
 }

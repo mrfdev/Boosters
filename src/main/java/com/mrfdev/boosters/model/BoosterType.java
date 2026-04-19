@@ -5,7 +5,8 @@ import java.util.Optional;
 
 public enum BoosterType {
     MCMMO("mcmmo", "mcMMO", "mcMMO"),
-    JOBS("jobs", "Jobs", "Jobs");
+    JOBS("jobs", "Jobs", "Jobs"),
+    POINTS("points", "Points", "PyroWelcomesPro");
 
     private final String key;
     private final String displayName;
@@ -38,6 +39,7 @@ public enum BoosterType {
         return switch (normalized) {
             case "mcmmo" -> Optional.of(MCMMO);
             case "jobs" -> Optional.of(JOBS);
+            case "points" -> Optional.of(POINTS);
             default -> Optional.empty();
         };
     }

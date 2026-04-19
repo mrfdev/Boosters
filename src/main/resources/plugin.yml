@@ -4,17 +4,18 @@ version: ${version}
 api-version: '1.21'
 author: mrfloris
 website: https://github.com/mrfdev/Boosters
-description: Track, restore, and schedule mcMMO and Jobs boosters with the /rate command.
+description: Track, restore, and schedule mcMMO, Jobs, and experimental points boosters with the /rate command.
 
 softdepend:
   - mcMMO
   - Jobs
+  - PyroWelcomesPro
   - PlaceholderAPI
 
 commands:
   rate:
-    description: Show, start, or stop tracked mcMMO and Jobs boosters.
-    usage: /rate [start|stop|debug] ...
+    description: Show, start, stop, reload, or debug tracked boosters.
+    usage: /rate [start|stop|reload|debug] ...
 
 permissions:
   onemb.boosters.rate:
