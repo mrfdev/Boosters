@@ -1,51 +1,154 @@
 # 1MB Boosters
 
-**This is a Helper plugin for the booster events we hold on the 1MoreBlock.com Minecraft 1.21.10/11 Java server.**
+`Boosters` is a helper plugin for 1MoreBlock.com that tracks server-wide boosters from [mcMMO](https://github.com/mcMMO-Dev/mcMMO) and [Jobs Reborn](https://github.com/Zrips/Jobs), restores them after a restart, and gives players a clean `/rate` command to check the current status.
 
-Currently, it supports mcMMO Overhaul 2.1.x, I can imagine more (see wishlist below)
+Version: `1.2.0`  
+Updated: `2026-04-19`
 
-The purpose of this plugin is two-fold:
+## What it does
 
-First, it will try to keep track of ongoing server (mcMMO /xprate and Jobs /jobs boost) events, so when the server restarts it will try to automatically start it back up again. 
+- Tracks native mcMMO `/xprate` commands from players and console.
+- Tracks native Jobs `/jobs boost ...` commands from players and console.
+- Restores tracked boosters a few seconds after startup.
+- Adds `/rate` for friendly player-facing status output.
+- Adds `/rate start ...` and `/rate stop ...` so staff can run timed boosters from one command.
+- Exposes PlaceholderAPI placeholders for holograms, scoreboards, and chat.
+- Uses MiniMessage components for this plugin's own console and in-game messages.
 
-And secondly, players can at any time in-game type: `/rate` to find out if there is an event active, and if so, which rate the xp multiplier is set to.
+## Server target
 
-More details about installation, configuration and usage can be found in the [wiki](https://github.com/mrfdev/Boosters/wiki) pages.
+- Built with Java `25`.
+- Compiled against the Paper API for `1.21.11`.
+- Intended for Paper `1.21.11` and newer Paper `26.x` servers that are running on Java `25`.
 
-## Origins
+If you run this exact build on a server that still uses Java `21`, the plugin will not load because the bytecode target is Java `25`.
 
-During the Minecraft 1.8 / 1.12.2 era with mcMMO Classic, I always wanted this feature. Someone from the Spigot community has helped me get started with this plugin. Unfortunately. I have lost the evidence of whom this was. It could have been KingTux, DefianceCoding, Nossr50 himself, my apologies. You're in the plugin.yml as Anonymous and are free to poke me for proper credits. 
+## Supported booster flows
 
-This stopped working at some point in 1.13+, and the project was let go when we converted to mcMMO Overhaul.
+### mcMMO
 
-## Where we are now
+Native mcMMO commands that Boosters tracks:
 
-With Minecraft version 1.17 here now, I wanted to pick things up again for some projects. Including this one. I've updated it slightly, so it works _okay_ with 1.16.5+, and mcMMO Overhaul and Jobs-Reborn. This now works on 64bit java25. The next step is making it a bit more modern, follow the logic of its purpose a bit more. And prepping it for future features that I want to consider.
+- `/xprate <rate> <true|false>`
+- `/xprate reset`
 
-## Bugs / Suggestions
+Example:
 
-If you have an issue with this plugin, please make sure your Spigot or Paper engine is up to date, that you are on the correct version of mcMMO and are using the latest build of this 1MB Boosters plugin. 
+- `/xprate 2 true`
 
-When you're sure you've done everything right, you're free to [open an issue](https://github.com/mrfdev/Boosters/issues/new?assignees=&labels=bug&template=bug_report.md&title=%5BBUG%5D) and file a bug report. We do not guarantee a fix, but we will do our best.
+mcMMO does not provide its own timer for `/xprate`, so Boosters can only track a native `/xprate` command as a manual booster with no known end time.
 
-If you have a suggestion or feature request, feel free to [open a new discussion](https://github.com/mrfdev/Boosters/discussions/new), and describe what you wish this plugin would include. We can at least read it and take it under consideration. 
+If you want Boosters to manage the timer for mcMMO, use:
 
-## Wishlist
+- `/rate start mcmmo <time> <rate>`
 
-At the moment this supports mcMMO XP Multiplier Rate Events and Jobs-Reborn Booster events for all jobs, but I can imagine in the (near) future we could add support for PyroWelcomes, Discord-exp, etc.
+That starts the mcMMO booster now and lets Boosters stop it later with `/xprate reset`.
 
-## Other contributions
+### Jobs Reborn
 
-An honorable mention: Thank you [nossr50](https://github.com/nossr50), for making [mcMMO](https://github.com/mcMMO-Dev/mcMMO) in the first place. (And mcMMO is a reference to the plugin, it's not pretending to be mcMMO or a clone of it. No mcMMO code is included in this source.)
+Native Jobs commands that Boosters tracks:
 
-A logic issue showed up at 4 am, and thankfully so did [xsmeths](https://github.com/xsmeths/), he pointed out it was the if/else statements used for determining console output being flawed, it was showing twice due to it printing if the rate was not 1 and in an else after a check for if the rate was 1.
+- `/jobs boost <job|all> <exp|money|points|all> <time> <rate>`
+- `/jobs boost all reset`
 
-Thank you for the help buddy. < edit from xsmeths; you're welcome, happy to help you floris :-D > <Hugs>
+Examples:
 
-Further contributions from [The456gamer](https://github.com/the456gamer) (thank you so much!)
+- `/jobs boost all all 1h 2`
+- `/jobs boost Miner exp 30m 2`
+- `/jobs boost all reset`
 
-And some suggestions from [zrips](https://github.com/zrips/) to help with improving efficiency.
+Jobs already has a timer, so Boosters stores the remaining time and reapplies the booster after restart with the correct time left.
 
-## Version
+The built-in admin shortcut uses a global Jobs booster:
 
-[Tested build](https://github.com/mrfdev/Boosters/releases) Version 1.1.0, for Paper 1.21.10/11 (java25). Last updated: January 1st 2026. 
+- `/rate start jobs <time> <rate>`
+
+Internally, that runs `/jobs boost all all <time> <rate>`.
+
+## Commands
+
+### Player command
+
+- `/rate`
+  Shows the current tracked booster status for mcMMO and Jobs.
+
+### Admin commands
+
+- `/rate start <mcmmo|jobs> <time> <rate>`
+  Starts a tracked booster. For mcMMO this creates a timed booster managed by Boosters. For Jobs this starts a global all/all booster.
+- `/rate stop <mcmmo|jobs|all>`
+  Stops one tracked booster or both.
+
+If `/rate start` or `/rate stop` is used without enough arguments, the plugin shows the correct command synopsis.
+
+## Command examples
+
+- `/rate`
+- `/rate start mcmmo 1h 2`
+- `/rate start mcmmo 2h30m 3`
+- `/rate start jobs 30m 2`
+- `/rate start jobs 1h 2.5`
+- `/rate stop mcmmo`
+- `/rate stop jobs`
+- `/rate stop all`
+
+## Permissions
+
+- `onemb.booster.rate`
+  Allows players to use `/rate`.
+- `onemb.booster.admin`
+  Allows staff to use `/rate start ...` and `/rate stop ...`.
+- `boosters.rate`
+  Legacy compatibility node for older permission setups.
+- `boosters.admin`
+  Legacy compatibility node for older permission setups.
+
+## PlaceholderAPI
+
+Boosters registers the PlaceholderAPI identifier:
+
+- `%onemb_boosters_mcmmo_active%`
+- `%onemb_boosters_mcmmo_rate%`
+- `%onemb_boosters_mcmmo_time%`
+- `%onemb_boosters_mcmmo_timeleft%`
+- `%onemb_boosters_jobs_active%`
+- `%onemb_boosters_jobs_rate%`
+- `%onemb_boosters_jobs_time%`
+- `%onemb_boosters_jobs_timeleft%`
+
+Returned values:
+
+- `active` returns `Yes` or `No`
+- `rate` returns the multiplier without the `x`, for example `2` or `2.5`
+- `time` returns the original tracked duration, for example `2h`
+- `timeleft` returns the remaining tracked duration, for example `1h 3m`
+
+When a booster is not active:
+
+- `rate` returns `1`
+- `time` returns `None`
+- `timeleft` returns `None`
+
+When mcMMO was started directly with `/xprate` and no timer is known:
+
+- `time` returns `Manual`
+- `timeleft` returns `Manual`
+
+## Files and storage
+
+- `config.yml`
+  Settings such as restore delay and mcMMO announcement behavior.
+- `booster-state.yml`
+  Automatically managed runtime state for tracked boosters.
+
+## Build notes
+
+- Gradle targets Java `25`.
+- The plugin is compiled against `io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT`.
+- PlaceholderAPI support is included as an optional dependency and is intended to work with newer PlaceholderAPI builds, including the `2.12.3-DEV-265` line you referenced for your server.
+
+## Credits
+
+- [nossr50](https://github.com/nossr50) and the mcMMO team for [mcMMO](https://github.com/mcMMO-Dev/mcMMO)
+- [Zrips](https://github.com/Zrips) for [Jobs Reborn](https://github.com/Zrips/Jobs)
+- Everyone who helped shape the original idea and later fixes for this plugin

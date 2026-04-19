@@ -22,14 +22,18 @@ Thumbs.db
 .idea/
 *.iml
 .vscode/
+.classpath
+.project
+.settings/
+bin/
 
 # =========================
 # Logs
 # =========================
 *.log
+logs/
 
 # =========================
 # Misc
 # =========================
 hs_err_pid*
-

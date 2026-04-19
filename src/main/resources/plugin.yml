@@ -1,10 +1,10 @@
 name: Boosters
 main: com.mrfdev.boosters.Boosters
 version: ${version}
-api-version: '1.20'
+api-version: '1.21'
 author: mrfloris
 website: https://github.com/mrfdev/Boosters
-description: Persist and restore server-wide booster events (mcMMO xprate, Jobs Reborn boosts) across restarts.
+description: Track, restore, and schedule mcMMO and Jobs boosters with the /rate command.
 
 softdepend:
   - mcMMO
@@ -13,12 +13,20 @@ softdepend:
 
 commands:
   rate:
-    description: Shows current stored mcMMO xprate and Jobs boost restore status.
-    usage: /rate
-    permission: boosters.rate
+    description: Show, start, or stop tracked mcMMO and Jobs boosters.
+    usage: /rate [start|stop] ...
+    permission: onemb.booster.rate
 
 permissions:
+  onemb.booster.rate:
+    description: Allows players to view booster status with /rate.
+    default: true
+  onemb.booster.admin:
+    description: Allows staff to start and stop tracked boosters with /rate.
+    default: op
   boosters.rate:
+    description: Legacy permission node kept for backwards compatibility.
     default: true
   boosters.admin:
+    description: Legacy permission node kept for backwards compatibility.
     default: op
