@@ -5,27 +5,36 @@ import com.mrfdev.boosters.listener.ExternalCommandListener;
 import com.mrfdev.boosters.placeholder.BoostersPlaceholderExpansion;
 import com.mrfdev.boosters.service.BoosterService;
 import com.mrfdev.boosters.storage.BoosterStateStorage;
+import com.mrfdev.boosters.util.BuildInfo;
 import com.mrfdev.boosters.util.MessageService;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 public final class Boosters extends JavaPlugin {
 
     private BoosterService boosterService;
     private BoostersPlaceholderExpansion placeholderExpansion;
+    private BuildInfo buildInfo;
 
     @Override
     public void onEnable() {
+        migrateLegacyDataFolder();
         saveDefaultConfig();
 
+        buildInfo = BuildInfo.load(this);
         MessageService messageService = new MessageService();
         BoosterStateStorage storage = new BoosterStateStorage(this);
         boosterService = new BoosterService(this, storage, messageService);
 
-        RateCommand rateCommand = new RateCommand(boosterService, messageService);
+        RateCommand rateCommand = new RateCommand(this, buildInfo, boosterService, messageService);
         PluginCommand rate = Objects.requireNonNull(getCommand("rate"), "The /rate command is missing from plugin.yml");
         rate.setExecutor(rateCommand);
         rate.setTabCompleter(rateCommand);
@@ -54,6 +63,54 @@ public final class Boosters extends JavaPlugin {
         if (boosterService != null) {
             boosterService.shutdown();
             boosterService = null;
+        }
+    }
+
+    private void migrateLegacyDataFolder() {
+        Path newFolder = getDataFolder().toPath();
+        if (Files.exists(newFolder)) {
+            return;
+        }
+
+        Path pluginsFolder = newFolder.getParent();
+        if (pluginsFolder == null) {
+            return;
+        }
+
+        for (String legacyName : new String[]{"Boosters", "boosters"}) {
+            Path legacyFolder = pluginsFolder.resolve(legacyName);
+            if (!Files.exists(legacyFolder) || legacyFolder.equals(newFolder)) {
+                continue;
+            }
+
+            try {
+                Files.createDirectories(newFolder.getParent());
+                try {
+                    Files.move(legacyFolder, newFolder, StandardCopyOption.ATOMIC_MOVE);
+                } catch (IOException moveFailure) {
+                    copyDirectoryContents(legacyFolder, newFolder);
+                }
+                getLogger().info("Migrated legacy data folder from " + legacyFolder + " to " + newFolder);
+                return;
+            } catch (IOException exception) {
+                getLogger().warning("Could not migrate legacy data folder from " + legacyFolder + " to " + newFolder + ": " + exception.getMessage());
+            }
+        }
+    }
+
+    private void copyDirectoryContents(Path source, Path target) throws IOException {
+        Files.createDirectories(target);
+        try (Stream<Path> paths = Files.walk(source)) {
+            for (Path sourcePath : paths.toList()) {
+                Path relative = source.relativize(sourcePath);
+                Path targetPath = target.resolve(relative);
+                if (Files.isDirectory(sourcePath)) {
+                    Files.createDirectories(targetPath);
+                    continue;
+                }
+                Files.createDirectories(targetPath.getParent());
+                Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+            }
         }
     }
 }

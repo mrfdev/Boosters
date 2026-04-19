@@ -2,7 +2,8 @@
 
 `Boosters` is a helper plugin for 1MoreBlock.com that tracks server-wide boosters from [mcMMO](https://github.com/mcMMO-Dev/mcMMO) and [Jobs Reborn](https://github.com/Zrips/Jobs), restores them after a restart, and gives players a clean `/rate` command to check the current status.
 
-Version: `1.2.0`  
+Version: `1.2.1`  
+Build: `023`  
 Updated: `2026-04-19`
 
 ## What it does
@@ -12,6 +13,7 @@ Updated: `2026-04-19`
 - Restores tracked boosters a few seconds after startup.
 - Adds `/rate` for friendly player-facing status output.
 - Adds `/rate start ...` and `/rate stop ...` so staff can run timed boosters from one command.
+- Adds `/rate debug` for quick diagnostics about versions, permissions, dependencies, and tracked state.
 - Exposes PlaceholderAPI placeholders for holograms, scoreboards, and chat.
 - Uses MiniMessage components for this plugin's own console and in-game messages.
 
@@ -20,6 +22,8 @@ Updated: `2026-04-19`
 - Built with Java `25`.
 - Compiled against the Paper API for `1.21.11`.
 - Intended for Paper `1.21.11` and newer Paper `26.x` servers that are running on Java `25`.
+- The built jar is named `1MB-Boosters-v1.2.1-023-j25-1.21.11.jar`.
+- The plugin data folder is `plugins/1MB-Boosters/`.
 
 If you run this exact build on a server that still uses Java `21`, the plugin will not load because the bytecode target is Java `25`.
 
@@ -78,6 +82,8 @@ Internally, that runs `/jobs boost all all <time> <rate>`.
   Starts a tracked booster. For mcMMO this creates a timed booster managed by Boosters. For Jobs this starts a global all/all booster.
 - `/rate stop <mcmmo|jobs|all>`
   Stops one tracked booster or both.
+- `/rate debug`
+  Shows plugin version, build number, target versions, commands, permissions, dependency status, and tracked booster state details.
 
 If `/rate start` or `/rate stop` is used without enough arguments, the plugin shows the correct command synopsis.
 
@@ -91,6 +97,7 @@ If `/rate start` or `/rate stop` is used without enough arguments, the plugin sh
 - `/rate stop mcmmo`
 - `/rate stop jobs`
 - `/rate stop all`
+- `/rate debug`
 
 ## Permissions
 
@@ -98,9 +105,13 @@ If `/rate start` or `/rate stop` is used without enough arguments, the plugin sh
   Allows players to use `/rate`.
 - `onemb.booster.admin`
   Allows staff to use `/rate start ...` and `/rate stop ...`.
+- `onemb.booster.debug`
+  Allows staff to use `/rate debug`.
 - `boosters.rate`
   Legacy compatibility node for older permission setups.
 - `boosters.admin`
+  Legacy compatibility node for older permission setups.
+- `boosters.debug`
   Legacy compatibility node for older permission setups.
 
 ## PlaceholderAPI
@@ -141,10 +152,18 @@ When mcMMO was started directly with `/xprate` and no timer is known:
 - `booster-state.yml`
   Automatically managed runtime state for tracked boosters.
 
+The expected folder layout is:
+
+- `plugins/1MB-Boosters/config.yml`
+- `plugins/1MB-Boosters/booster-state.yml`
+
+If you upgrade from an older release that used `plugins/Boosters/` or `plugins/boosters/`, this build attempts to migrate that data folder on startup.
+
 ## Build notes
 
 - Gradle targets Java `25`.
 - The plugin is compiled against `io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT`.
+- Current release metadata: version `1.2.1`, build `023`.
 - PlaceholderAPI support is included as an optional dependency and is intended to work with newer PlaceholderAPI builds, including the `2.12.3-DEV-265` line you referenced for your server.
 
 ## Credits

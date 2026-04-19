@@ -3,48 +3,69 @@ package com.mrfdev.boosters.command;
 import com.mrfdev.boosters.model.BoosterState;
 import com.mrfdev.boosters.model.BoosterType;
 import com.mrfdev.boosters.service.BoosterService;
+import com.mrfdev.boosters.util.BuildInfo;
 import com.mrfdev.boosters.util.DurationUtil;
 import com.mrfdev.boosters.util.MessageService;
 import com.mrfdev.boosters.util.NumberUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.StringUtil;
 
+import java.io.File;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public final class RateCommand implements TabExecutor {
 
-    private static final List<String> ROOT_ARGUMENTS = List.of("start", "stop");
+    private static final List<String> ROOT_ARGUMENTS = List.of("start", "stop", "debug");
     private static final List<String> START_TARGETS = List.of("mcmmo", "jobs");
     private static final List<String> STOP_TARGETS = List.of("mcmmo", "jobs", "all");
     private static final List<String> COMMON_DURATIONS = List.of("15m", "30m", "1h", "2h");
     private static final List<String> COMMON_RATES = List.of("2", "2.5", "3");
 
+    private final JavaPlugin plugin;
+    private final BuildInfo buildInfo;
     private final BoosterService boosterService;
     private final MessageService messageService;
 
-    public RateCommand(BoosterService boosterService, MessageService messageService) {
+    public RateCommand(JavaPlugin plugin, BuildInfo buildInfo, BoosterService boosterService, MessageService messageService) {
+        this.plugin = plugin;
+        this.buildInfo = buildInfo;
         this.boosterService = boosterService;
         this.messageService = messageService;
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!hasViewPermission(sender)) {
-            messageService.prefixed(sender, "<red>You do not have permission to use this command.</red>");
-            return true;
-        }
-
         if (args.length == 0) {
+            if (!hasViewPermission(sender)) {
+                messageService.prefixed(sender, "<red>You do not have permission to use this command.</red>");
+                return true;
+            }
             sendStatus(sender);
             return true;
         }
 
         String subcommand = args[0].toLowerCase(Locale.ROOT);
+        if (subcommand.equals("debug")) {
+            return handleDebug(sender);
+        }
+
+        if (!hasViewPermission(sender)) {
+            messageService.prefixed(sender, "<red>You do not have permission to use this command.</red>");
+            return true;
+        }
+
         return switch (subcommand) {
             case "start" -> handleStart(sender, args);
             case "stop" -> handleStop(sender, args);
@@ -247,18 +268,20 @@ public final class RateCommand implements TabExecutor {
         messageService.prefixed(sender, "<gray>Usage:</gray>");
         messageService.send(sender, "<yellow>/rate</yellow><gray> - Show the current booster status.</gray>");
         messageService.send(sender,
-                "<yellow>/rate start <mcmmo|jobs> <time> <rate></yellow><gray> - Start a tracked booster.</gray>");
+                "<yellow>/rate start [mcmmo|jobs] [time] [rate]</yellow><gray> - Start a tracked booster.</gray>");
         messageService.send(sender,
-                "<yellow>/rate stop <mcmmo|jobs|all></yellow><gray> - Stop tracked boosters.</gray>");
+                "<yellow>/rate stop [mcmmo|jobs|all]</yellow><gray> - Stop tracked boosters.</gray>");
+        messageService.send(sender,
+                "<yellow>/rate debug</yellow><gray> - Show plugin build and booster diagnostics.</gray>");
     }
 
     private void sendStartSynopsis(CommandSender sender) {
-        messageService.prefixed(sender, "<gray>Usage: <yellow>/rate start <mcmmo|jobs> <time> <rate></yellow></gray>");
+        messageService.prefixed(sender, "<gray>Usage: <yellow>/rate start [mcmmo|jobs] [time] [rate]</yellow></gray>");
         messageService.send(sender, "<gray>Examples: <yellow>/rate start mcmmo 1h 2</yellow> and <yellow>/rate start jobs 30m 2.5</yellow></gray>");
     }
 
     private void sendStopSynopsis(CommandSender sender) {
-        messageService.prefixed(sender, "<gray>Usage: <yellow>/rate stop <mcmmo|jobs|all></yellow></gray>");
+        messageService.prefixed(sender, "<gray>Usage: <yellow>/rate stop [mcmmo|jobs|all]</yellow></gray>");
         messageService.send(sender, "<gray>Examples: <yellow>/rate stop mcmmo</yellow> and <yellow>/rate stop all</yellow></gray>");
     }
 
@@ -272,6 +295,138 @@ public final class RateCommand implements TabExecutor {
 
     private boolean hasAdminPermission(CommandSender sender) {
         return sender.isOp()
+                || sender.hasPermission("onemb.booster.admin")
+                || sender.hasPermission("boosters.admin");
+    }
+
+    private boolean handleDebug(CommandSender sender) {
+        if (!hasDebugPermission(sender)) {
+            messageService.prefixed(sender, "<red>You need <yellow>onemb.booster.debug</yellow> to use <yellow>/rate debug</yellow>.</red>");
+            return true;
+        }
+
+        PluginDescriptionFile description = plugin.getDescription();
+        File stateFile = new File(plugin.getDataFolder(), "booster-state.yml");
+        Plugin placeholderApi = Bukkit.getPluginManager().getPlugin("PlaceholderAPI");
+        Plugin mcMMO = Bukkit.getPluginManager().getPlugin("mcMMO");
+        Plugin jobs = Bukkit.getPluginManager().getPlugin("Jobs");
+
+        messageService.prefixed(sender, "<gray>Debug information:</gray>");
+        messageService.send(sender,
+                "<yellow>Plugin</yellow><gray>: <white><name></white> v<white><version></white> build <white><build></white></gray>",
+                MessageService.value("name", buildInfo.pluginName()),
+                MessageService.value("version", buildInfo.pluginVersion()),
+                MessageService.value("build", buildInfo.buildNumber()));
+        messageService.send(sender,
+                "<yellow>Targets</yellow><gray>: Minecraft <white><mc></white>, Java <white><java></white></gray>",
+                MessageService.value("mc", buildInfo.targetMinecraftVersion()),
+                MessageService.value("java", buildInfo.targetJavaVersion()));
+        messageService.send(sender,
+                "<yellow>Artifact</yellow><gray>: <white><artifact></white></gray>",
+                MessageService.value("artifact", buildInfo.artifactFileName()));
+        messageService.send(sender,
+                "<yellow>Runtime</yellow><gray>: Server <white><server></white>, Bukkit API <white><api></white>, Java <white><java></white></gray>",
+                MessageService.value("server", Bukkit.getVersion()),
+                MessageService.value("api", Bukkit.getBukkitVersion()),
+                MessageService.value("java", System.getProperty("java.version", "unknown")));
+        messageService.send(sender,
+                "<yellow>Data folder</yellow><gray>: <white><path></white> (<white><exists></white>)</gray>",
+                MessageService.value("path", plugin.getDataFolder().getAbsolutePath()),
+                MessageService.value("exists", plugin.getDataFolder().exists() ? "exists" : "missing"));
+        messageService.send(sender,
+                "<yellow>State file</yellow><gray>: <white><path></white> (<white><exists></white>)</gray>",
+                MessageService.value("path", stateFile.getAbsolutePath()),
+                MessageService.value("exists", stateFile.exists() ? "exists" : "missing"));
+        messageService.send(sender,
+                "<yellow>Restore delay</yellow><gray>: <white><delay></white> ticks</gray>",
+                MessageService.value("delay", String.valueOf(Math.max(1L, plugin.getConfig().getLong("restore.delayTicks", 60L)))));
+        messageService.send(sender,
+                "<yellow>PlaceholderAPI</yellow><gray>: <white><status></white></gray>",
+                MessageService.value("status", pluginStatus(placeholderApi)));
+        messageService.send(sender,
+                "<yellow>mcMMO plugin</yellow><gray>: <white><status></white></gray>",
+                MessageService.value("status", pluginStatus(mcMMO)));
+        messageService.send(sender,
+                "<yellow>Jobs plugin</yellow><gray>: <white><status></white></gray>",
+                MessageService.value("status", pluginStatus(jobs)));
+
+        sendMcMMODebug(sender, boosterService.getState(BoosterType.MCMMO));
+        sendJobsDebug(sender, boosterService.getState(BoosterType.JOBS));
+
+        String commandList = description.getCommands().keySet().stream()
+                .sorted()
+                .map(name -> "/" + name)
+                .collect(Collectors.joining(", "));
+        String permissionList = description.getPermissions().stream()
+                .sorted(Comparator.comparing(permission -> permission.getName().toLowerCase(Locale.ROOT)))
+                .map(permission -> permission.getName())
+                .collect(Collectors.joining(", "));
+
+        messageService.send(sender,
+                "<yellow>Command list</yellow><gray>: <white>/rate</white>, <white>/rate start [mcmmo|jobs] [time] [rate]</white>, <white>/rate stop [mcmmo|jobs|all]</white>, <white>/rate debug</white></gray>");
+        messageService.send(sender,
+                "<yellow>Registered commands</yellow><gray>: <white><commands></white></gray>",
+                MessageService.value("commands", commandList.isBlank() ? "(none)" : commandList));
+        messageService.send(sender,
+                "<yellow>Permission list</yellow><gray>: <white><permissions></white></gray>",
+                MessageService.value("permissions", permissionList.isBlank() ? "(none)" : permissionList));
+        return true;
+    }
+
+    private void sendMcMMODebug(CommandSender sender, BoosterState state) {
+        messageService.send(sender,
+                "<yellow>mcMMO tracking</yellow><gray>: enabled=<white><tracking></white>, dependency=<white><dependency></white>, active=<white><active></white>, mode=<white><mode></white>, rate=<white><rate>x</white>, announce=<white><announce></white></gray>",
+                MessageService.value("tracking", String.valueOf(boosterService.isTrackingEnabled(BoosterType.MCMMO))),
+                MessageService.value("dependency", String.valueOf(boosterService.isDependencyAvailable(BoosterType.MCMMO))),
+                MessageService.value("active", String.valueOf(state.active())),
+                MessageService.value("mode", state.active() ? (state.hasTrackedDuration() ? "timed" : "manual") : "inactive"),
+                MessageService.value("rate", NumberUtil.formatRate(state.rate())),
+                MessageService.value("announce", String.valueOf(state.announceOnStart())));
+        messageService.send(sender,
+                "<yellow>mcMMO times</yellow><gray>: started=<white><started></white>, duration=<white><duration></white>, ends=<white><ends></white>, remaining=<white><remaining></white></gray>",
+                MessageService.value("started", formatTimestamp(state.startedAtEpochMillis())),
+                MessageService.value("duration", state.hasTrackedDuration() ? DurationUtil.formatFriendlyDuration(state.durationMillis()) : "n/a"),
+                MessageService.value("ends", formatTimestamp(state.endsAtEpochMillis())),
+                MessageService.value("remaining", state.hasTrackedDuration() ? DurationUtil.formatFriendlyDuration(state.remainingMillis(System.currentTimeMillis())) : "n/a"));
+    }
+
+    private void sendJobsDebug(CommandSender sender, BoosterState state) {
+        messageService.send(sender,
+                "<yellow>Jobs tracking</yellow><gray>: enabled=<white><tracking></white>, dependency=<white><dependency></white>, active=<white><active></white>, target=<white><target></white>, scope=<white><scope></white>, rate=<white><rate>x</white></gray>",
+                MessageService.value("tracking", String.valueOf(boosterService.isTrackingEnabled(BoosterType.JOBS))),
+                MessageService.value("dependency", String.valueOf(boosterService.isDependencyAvailable(BoosterType.JOBS))),
+                MessageService.value("active", String.valueOf(state.active())),
+                MessageService.value("target", state.jobsTarget().isBlank() ? "n/a" : state.jobsTarget()),
+                MessageService.value("scope", state.jobsScope().isBlank() ? "n/a" : state.jobsScope()),
+                MessageService.value("rate", NumberUtil.formatRate(state.rate())));
+        messageService.send(sender,
+                "<yellow>Jobs times</yellow><gray>: started=<white><started></white>, duration=<white><duration></white>, ends=<white><ends></white>, remaining=<white><remaining></white></gray>",
+                MessageService.value("started", formatTimestamp(state.startedAtEpochMillis())),
+                MessageService.value("duration", state.hasTrackedDuration() ? DurationUtil.formatFriendlyDuration(state.durationMillis()) : "n/a"),
+                MessageService.value("ends", formatTimestamp(state.endsAtEpochMillis())),
+                MessageService.value("remaining", state.hasTrackedDuration() ? DurationUtil.formatFriendlyDuration(state.remainingMillis(System.currentTimeMillis())) : "n/a"));
+    }
+
+    private String pluginStatus(Plugin pluginDependency) {
+        if (pluginDependency == null) {
+            return "not installed";
+        }
+        return pluginDependency.isEnabled()
+                ? "enabled (" + pluginDependency.getDescription().getVersion() + ")"
+                : "installed but disabled";
+    }
+
+    private String formatTimestamp(long epochMillis) {
+        if (epochMillis <= 0L) {
+            return "n/a";
+        }
+        return Instant.ofEpochMilli(epochMillis).toString();
+    }
+
+    private boolean hasDebugPermission(CommandSender sender) {
+        return sender.isOp()
+                || sender.hasPermission("onemb.booster.debug")
+                || sender.hasPermission("boosters.debug")
                 || sender.hasPermission("onemb.booster.admin")
                 || sender.hasPermission("boosters.admin");
     }

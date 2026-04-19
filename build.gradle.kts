@@ -1,18 +1,25 @@
+val pluginName = "1MB-Boosters"
+val pluginVersion = "1.2.1"
+val buildNumber = "023"
+val targetJavaVersion = 25
+val targetMinecraftVersion = "1.21.11"
+val artifactFileName = "${pluginName}-v${pluginVersion}-${buildNumber}-j${targetJavaVersion}-${targetMinecraftVersion}.jar"
+
 plugins {
     java
 }
 
 group = "com.mrfdev"
-version = "1.2.0"
+version = pluginVersion
 
 tasks.withType<JavaCompile>().configureEach {
     options.encoding = "UTF-8"
-    options.release.set(25)
+    options.release.set(targetJavaVersion)
 }
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(25))
+        languageVersion.set(JavaLanguageVersion.of(targetJavaVersion))
     }
 }
 
@@ -23,17 +30,24 @@ repositories {
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:${targetMinecraftVersion}-R0.1-SNAPSHOT")
     compileOnly("me.clip:placeholderapi:2.11.6")
 }
 
 tasks.processResources {
     filteringCharset = "UTF-8"
-    filesMatching("plugin.yml") {
-        expand("version" to project.version)
+    filesMatching(listOf("plugin.yml", "build-info.properties")) {
+        expand(
+            "pluginName" to pluginName,
+            "version" to project.version,
+            "buildNumber" to buildNumber,
+            "targetMinecraftVersion" to targetMinecraftVersion,
+            "targetJavaVersion" to targetJavaVersion,
+            "artifactFileName" to artifactFileName
+        )
     }
 }
 
 tasks.jar {
-    archiveBaseName.set("Boosters")
+    archiveFileName.set(artifactFileName)
 }
