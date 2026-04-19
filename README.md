@@ -13,7 +13,7 @@ Updated: `2026-04-19`
 - Restores tracked boosters a few seconds after startup.
 - Adds `/rate` for friendly player-facing status output.
 - Adds `/rate start ...` and `/rate stop ...` so staff can run timed boosters from one command.
-- Adds `/rate debug` for quick diagnostics about versions, permissions, dependencies, and tracked state.
+- Adds `/rate debug` with two pages for quick diagnostics about versions, permissions, placeholders, dependencies, and tracked state.
 - Exposes PlaceholderAPI placeholders for holograms, scoreboards, and chat.
 - Uses MiniMessage components for this plugin's own console and in-game messages.
 
@@ -78,18 +78,19 @@ Internally, that runs `/jobs boost all all <time> <rate>`.
 
 ### Admin commands
 
-- `/rate start <mcmmo|jobs> <time> <rate>`
-  Starts a tracked booster. For mcMMO this creates a timed booster managed by Boosters. For Jobs this starts a global all/all booster.
+- `/rate start <all|mcmmo|jobs> <time> <rate>`
+  Starts tracked boosters. `all` starts the same timed/rated booster for both mcMMO and Jobs. For mcMMO this creates a timed booster managed by Boosters. For Jobs this starts a global all/all booster.
 - `/rate stop <mcmmo|jobs|all>`
   Stops one tracked booster or both.
-- `/rate debug`
-  Shows plugin version, build number, target versions, commands, permissions, dependency status, and tracked booster state details.
+- `/rate debug [1|2]`
+  Shows plugin diagnostics in two pages. Page 1 covers build info, runtime info, dependencies, and tracked booster state. Page 2 covers commands, permission nodes, and PlaceholderAPI placeholders.
 
 If `/rate start` or `/rate stop` is used without enough arguments, the plugin shows the correct command synopsis.
 
 ## Command examples
 
 - `/rate`
+- `/rate start all 1h 2`
 - `/rate start mcmmo 1h 2`
 - `/rate start mcmmo 2h30m 3`
 - `/rate start jobs 30m 2`
@@ -98,52 +99,43 @@ If `/rate start` or `/rate stop` is used without enough arguments, the plugin sh
 - `/rate stop jobs`
 - `/rate stop all`
 - `/rate debug`
+- `/rate debug 2`
 
 ## Permissions
 
-- `onemb.booster.rate`
+- `onemb.boosters.rate`
   Allows players to use `/rate`.
-- `onemb.booster.admin`
+- `onemb.boosters.admin`
   Allows staff to use `/rate start ...` and `/rate stop ...`.
-- `onemb.booster.debug`
+- `onemb.boosters.debug`
   Allows staff to use `/rate debug`.
-- `boosters.rate`
-  Legacy compatibility node for older permission setups.
-- `boosters.admin`
-  Legacy compatibility node for older permission setups.
-- `boosters.debug`
-  Legacy compatibility node for older permission setups.
 
 ## PlaceholderAPI
 
 Boosters registers the PlaceholderAPI identifier:
 
 - `%onemb_boosters_mcmmo_active%`
+  Returns `Yes` or `No` depending on whether the tracked mcMMO booster is active.
 - `%onemb_boosters_mcmmo_rate%`
+  Returns the tracked mcMMO rate without the `x`, for example `2` or `2.5`.
 - `%onemb_boosters_mcmmo_time%`
+  Returns the original tracked mcMMO duration. If mcMMO was started directly with native `/xprate` and no timer is known, this returns `Manual`.
 - `%onemb_boosters_mcmmo_timeleft%`
+  Returns the remaining tracked mcMMO duration. If mcMMO was started directly with native `/xprate` and no timer is known, this returns `Manual`.
 - `%onemb_boosters_jobs_active%`
+  Returns `Yes` or `No` depending on whether the tracked Jobs booster is active.
 - `%onemb_boosters_jobs_rate%`
+  Returns the tracked Jobs rate without the `x`, for example `2` or `2.5`.
 - `%onemb_boosters_jobs_time%`
+  Returns the original tracked Jobs duration.
 - `%onemb_boosters_jobs_timeleft%`
-
-Returned values:
-
-- `active` returns `Yes` or `No`
-- `rate` returns the multiplier without the `x`, for example `2` or `2.5`
-- `time` returns the original tracked duration, for example `2h`
-- `timeleft` returns the remaining tracked duration, for example `1h 3m`
+  Returns the remaining tracked Jobs duration.
 
 When a booster is not active:
 
 - `rate` returns `1`
 - `time` returns `None`
 - `timeleft` returns `None`
-
-When mcMMO was started directly with `/xprate` and no timer is known:
-
-- `time` returns `Manual`
-- `timeleft` returns `Manual`
 
 ## Files and storage
 

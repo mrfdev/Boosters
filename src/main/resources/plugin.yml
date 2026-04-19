@@ -15,24 +15,14 @@ commands:
   rate:
     description: Show, start, or stop tracked mcMMO and Jobs boosters.
     usage: /rate [start|stop|debug] ...
-    permission: onemb.booster.rate
 
 permissions:
-  onemb.booster.rate:
+  onemb.boosters.rate:
     description: Allows players to view booster status with /rate.
     default: true
-  onemb.booster.admin:
+  onemb.boosters.admin:
     description: Allows staff to start and stop tracked boosters with /rate.
     default: op
-  onemb.booster.debug:
+  onemb.boosters.debug:
     description: Allows staff to use /rate debug for build and state diagnostics.
-    default: op
-  boosters.rate:
-    description: Legacy permission node kept for backwards compatibility.
-    default: true
-  boosters.admin:
-    description: Legacy permission node kept for backwards compatibility.
-    default: op
-  boosters.debug:
-    description: Legacy permission node kept for backwards compatibility.
     default: op
