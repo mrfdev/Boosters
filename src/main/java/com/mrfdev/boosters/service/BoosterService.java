@@ -535,6 +535,8 @@ public final class BoosterService {
             return;
         }
 
+        net.kyori.adventure.text.Component component = messageServiceComponent(template, type, rate, duration, senderName);
+
         messageService.send(Bukkit.getConsoleSender(), template,
                 MessageService.value("booster", displayLabel(type)),
                 MessageService.value("rate", rate),
@@ -543,7 +545,7 @@ public final class BoosterService {
                 MessageService.value("ingame", String.valueOf(getPointsCurrentIngamePoints())),
                 MessageService.value("discord", String.valueOf(getPointsCurrentDiscordPoints())));
 
-        plugin.getServer().broadcast(messageServiceComponent(template, type, rate, duration, senderName));
+        plugin.getServer().getOnlinePlayers().forEach(player -> player.sendMessage(component));
     }
 
     private void executeLifecycleCommands(String phase, BoosterType type, BoosterState state, String senderName) {

@@ -29,7 +29,7 @@ public final class RateCommand implements TabExecutor {
 
     private static final List<String> DEBUG_TOPICS = List.of(
             "summary", "1", "reference", "2", "commands", "permissions",
-            "placeholders", "integrations", "state", "raw", "3", "config", "logs", "clean", "cleanlogs"
+            "placeholders", "integrations", "state", "raw", "3", "config", "toggle", "all", "logs", "clean", "cleanlogs"
     );
 
     private final JavaPlugin plugin;
@@ -99,17 +99,20 @@ public final class RateCommand implements TabExecutor {
         }
 
         if (args.length == 3 && args[0].equalsIgnoreCase("debug") && args[1].equalsIgnoreCase("config")) {
-            return hasDebugPermission(sender) ? partialMatches(args[2], List.of(
-                    "features.points.enabled",
-                    "features.points.visible",
-                    "features.points.experimental",
-                    "display.adminShowExperimentalIntegrations",
-                    "logging.auditToConsole",
-                    "commandHooks.start.global",
-                    "commandHooks.start.mcmmo",
-                    "commandHooks.stop.global",
-                    "commandHooks.stop.mcmmo"
-            )) : List.of();
+            return hasDebugPermission(sender) ? partialMatches(args[2], configDebugPaths()) : List.of();
+        }
+
+        if (args.length == 3 && args[0].equalsIgnoreCase("debug") && args[1].equalsIgnoreCase("toggle")) {
+            return hasDebugPermission(sender) ? partialMatches(args[2], toggleableConfigPaths()) : List.of();
+        }
+
+        if (args.length == 4 && args[0].equalsIgnoreCase("debug") && args[1].equalsIgnoreCase("toggle")) {
+            return hasDebugPermission(sender) ? partialMatches(args[3], List.of("true", "false")) : List.of();
+        }
+
+        if (args.length == 4 && args[0].equalsIgnoreCase("debug") && args[1].equalsIgnoreCase("config")
+                && toggleableConfigPaths().contains(args[2])) {
+            return hasDebugPermission(sender) ? partialMatches(args[3], List.of("true", "false")) : List.of();
         }
 
         if (args.length == 3 && args[0].equalsIgnoreCase("debug") && args[1].equalsIgnoreCase("clean")) {
@@ -513,6 +516,15 @@ public final class RateCommand implements TabExecutor {
                 yield true;
             }
             case "config" -> handleDebugConfig(sender, args);
+            case "toggle" -> handleDebugToggle(sender, args);
+            case "all" -> {
+                if (!(sender instanceof org.bukkit.command.ConsoleCommandSender)) {
+                    messageService.prefixed(sender, "<red>Console only command.</red> <gray>Use <yellow>/rate debug summary</yellow>, <yellow>reference</yellow>, <yellow>integrations</yellow>, <yellow>state</yellow>, or <yellow>config</yellow> in-game.</gray>");
+                    yield true;
+                }
+                sendDebugAll(sender);
+                yield true;
+            }
             case "logs" -> {
                 sendDebugLogs(sender);
                 yield true;
@@ -531,12 +543,7 @@ public final class RateCommand implements TabExecutor {
 
     private boolean handleDebugConfig(CommandSender sender, String[] args) {
         if (args.length == 2) {
-            messageService.prefixed(sender, "<gray>Config summary:</gray>");
-            sendClickableDebugEntry(sender, "features.points.enabled", String.valueOf(plugin.getConfig().getBoolean("features.points.enabled", true)), "Click to copy the config key");
-            sendClickableDebugEntry(sender, "features.points.visible", String.valueOf(plugin.getConfig().getBoolean("features.points.visible", false)), "Click to copy the config key");
-            sendClickableDebugEntry(sender, "features.points.experimental", String.valueOf(plugin.getConfig().getBoolean("features.points.experimental", true)), "Click to copy the config key");
-            sendClickableDebugEntry(sender, "display.adminShowExperimentalIntegrations", String.valueOf(plugin.getConfig().getBoolean("display.adminShowExperimentalIntegrations", true)), "Click to copy the config key");
-            sendClickableDebugEntry(sender, "logging.auditToConsole", String.valueOf(plugin.getConfig().getBoolean("logging.auditToConsole", true)), "Click to copy the config key");
+            sendDebugConfigSummary(sender);
             return true;
         }
 
@@ -560,6 +567,43 @@ public final class RateCommand implements TabExecutor {
                 "<gray>Updated <yellow><path></yellow> to <yellow><value></yellow> and reloaded this plugin.</gray>",
                 MessageService.value("path", path),
                 MessageService.value("value", rawValue));
+        return true;
+    }
+
+    private boolean handleDebugToggle(CommandSender sender, String[] args) {
+        if (args.length < 3) {
+            messageService.prefixed(sender, "<gray>Usage: <yellow>/rate debug toggle <path> [true|false]</yellow></gray>");
+            messageService.send(sender, "<gray>Examples: <yellow>/rate debug toggle features.points.visible</yellow> or <yellow>/rate debug toggle features.points.visible true</yellow></gray>");
+            return true;
+        }
+
+        String path = args[2];
+        if (!plugin.getConfig().contains(path)) {
+            messageService.prefixed(sender,
+                    "<red>Config path <yellow><path></yellow> was not found.</red>",
+                    MessageService.value("path", path));
+            return true;
+        }
+
+        Object currentValue = plugin.getConfig().get(path);
+        if (!(currentValue instanceof Boolean currentBoolean)) {
+            messageService.prefixed(sender,
+                    "<red><path></yellow> is not a true/false setting, so it cannot be toggled.</red>",
+                    MessageService.value("path", path));
+            return true;
+        }
+
+        boolean newValue = args.length >= 4 ? Boolean.parseBoolean(args[3]) : !currentBoolean;
+        plugin.getConfig().set(path, newValue);
+        plugin.saveConfig();
+        if (plugin instanceof Boosters boosters) {
+            boosters.reloadRuntimeConfiguration();
+        }
+
+        messageService.prefixed(sender,
+                "<gray>Toggled <yellow><path></yellow> to <yellow><value></yellow> and reloaded this plugin.</gray>",
+                MessageService.value("path", path),
+                MessageService.value("value", String.valueOf(newValue)));
         return true;
     }
 
@@ -608,6 +652,17 @@ public final class RateCommand implements TabExecutor {
         sendDebugPlaceholders(sender);
     }
 
+    private void sendDebugAll(CommandSender sender) {
+        messageService.prefixed(sender, "<gray>Full debug dump:</gray>");
+        sendDebugSummary(sender);
+        sendDebugReference(sender);
+        sendDebugIntegrations(sender);
+        sendDebugState(sender);
+        sendDebugRaw(sender);
+        sendDebugConfigSummary(sender);
+        sendDebugLogs(sender);
+    }
+
     private void sendDebugCommands(CommandSender sender) {
         messageService.prefixed(sender, "<gray>Debug commands reference:</gray>");
         messageService.send(sender, "<white>/rate</white><gray> - Show the current booster status.</gray>");
@@ -619,10 +674,76 @@ public final class RateCommand implements TabExecutor {
         messageService.send(sender, "<white>/rate debug integrations</white><gray> - Show integration status details.</gray>");
         messageService.send(sender, "<white>/rate debug state</white><gray> - Show tracked state details.</gray>");
         messageService.send(sender, "<white>/rate debug raw</white><gray> - Show raw state values and important file paths.</gray>");
+        messageService.send(sender, "<white>/rate debug all</white><gray> - Console-only full debug dump.</gray>");
         messageService.send(sender, "<white>/rate debug config [path] [value]</white><gray> - Inspect or set config values.</gray>");
+        messageService.send(sender, "<white>/rate debug toggle <path> [true|false]</white><gray> - Flip or explicitly set a true/false config setting.</gray>");
         messageService.send(sender, "<white>/rate debug logs</white><gray> - Show recent audit actions.</gray>");
         messageService.send(sender, "<white>/rate debug clean logs</white><gray> - Clear recent audit actions.</gray>");
         messageService.send(sender, "<white>/rate debug cleanlogs</white><gray> - Alias for clearing recent audit actions.</gray>");
+    }
+
+    private void sendDebugConfigSummary(CommandSender sender) {
+        messageService.prefixed(sender, "<gray>Config summary:</gray>");
+        sendConfigSectionHeader(sender, "Core");
+        sendConfigEntry(sender, "locale.file");
+        sendConfigEntry(sender, "restore.delayTicks");
+
+        sendConfigSectionHeader(sender, "Features");
+        sendConfigEntry(sender, "features.mcmmo.enabled");
+        sendConfigEntry(sender, "features.jobs.enabled");
+        sendConfigEntry(sender, "features.points.enabled");
+        sendConfigEntry(sender, "features.points.visible");
+        sendConfigEntry(sender, "features.points.experimental");
+
+        sendConfigSectionHeader(sender, "Display");
+        sendConfigEntry(sender, "display.sections.mcmmo");
+        sendConfigEntry(sender, "display.sections.jobs");
+        sendConfigEntry(sender, "display.sections.points");
+        sendConfigEntry(sender, "display.labels.mcmmo");
+        sendConfigEntry(sender, "display.labels.jobs");
+        sendConfigEntry(sender, "display.labels.points");
+        sendConfigEntry(sender, "display.adminShowExperimentalIntegrations");
+
+        sendConfigSectionHeader(sender, "Tab Completion");
+        sendConfigEntry(sender, "tabCompletion.commonDurations");
+        sendConfigEntry(sender, "tabCompletion.commonRates");
+
+        sendConfigSectionHeader(sender, "Logging");
+        sendConfigEntry(sender, "logging.auditToConsole");
+        sendConfigEntry(sender, "logging.recentActionLimit");
+
+        sendConfigSectionHeader(sender, "Broadcasts");
+        sendConfigEntry(sender, "broadcasts.start.global");
+        sendConfigEntry(sender, "broadcasts.start.mcmmo");
+        sendConfigEntry(sender, "broadcasts.start.jobs");
+        sendConfigEntry(sender, "broadcasts.start.points");
+        sendConfigEntry(sender, "broadcasts.stop.global");
+        sendConfigEntry(sender, "broadcasts.stop.mcmmo");
+        sendConfigEntry(sender, "broadcasts.stop.jobs");
+        sendConfigEntry(sender, "broadcasts.stop.points");
+
+        sendConfigSectionHeader(sender, "mcMMO");
+        sendConfigEntry(sender, "mcmmo.announceOnRateStart");
+        sendConfigEntry(sender, "mcmmo.announceOnRestore");
+
+        sendConfigSectionHeader(sender, "Points");
+        sendConfigEntry(sender, "points.pluginName");
+        sendConfigEntry(sender, "points.configFile");
+        sendConfigEntry(sender, "points.reloadCommand");
+        sendConfigEntry(sender, "points.ingamePath");
+        sendConfigEntry(sender, "points.discordPath");
+        sendConfigEntry(sender, "points.baseIngamePoints");
+        sendConfigEntry(sender, "points.baseDiscordPoints");
+
+        sendConfigSectionHeader(sender, "Command Hooks");
+        sendConfigEntry(sender, "commandHooks.start.global");
+        sendConfigEntry(sender, "commandHooks.start.mcmmo");
+        sendConfigEntry(sender, "commandHooks.start.jobs");
+        sendConfigEntry(sender, "commandHooks.start.points");
+        sendConfigEntry(sender, "commandHooks.stop.global");
+        sendConfigEntry(sender, "commandHooks.stop.mcmmo");
+        sendConfigEntry(sender, "commandHooks.stop.jobs");
+        sendConfigEntry(sender, "commandHooks.stop.points");
     }
 
     private void sendDebugPermissions(CommandSender sender) {
@@ -744,13 +865,13 @@ public final class RateCommand implements TabExecutor {
                 MessageService.value("active", String.valueOf(state.active())),
                 MessageService.value("rate", NumberUtil.formatRate(state.rate())));
         messageService.send(sender,
-                "<gray>  configFile=<white><file></white>, reloadCommand=<white><reload></white>, base=<white><ingame>/<discord></white>, current=<white><currentIngame>/<currentDiscord></white></gray>",
+                "<gray>  config_file=<white><file></white>, reload_command=<white><reload></white>, base=<white><ingame>/<discord></white>, current=<white><current_ingame>/<current_discord></white></gray>",
                 MessageService.value("file", boosterService.getPointsConfigFile().getAbsolutePath()),
                 MessageService.value("reload", boosterService.getPointsReloadCommand()),
                 MessageService.value("ingame", String.valueOf(boosterService.getPointsBaseIngamePoints())),
                 MessageService.value("discord", String.valueOf(boosterService.getPointsBaseDiscordPoints())),
-                MessageService.value("currentIngame", String.valueOf(boosterService.getPointsCurrentIngamePoints())),
-                MessageService.value("currentDiscord", String.valueOf(boosterService.getPointsCurrentDiscordPoints())));
+                MessageService.value("current_ingame", String.valueOf(boosterService.getPointsCurrentIngamePoints())),
+                MessageService.value("current_discord", String.valueOf(boosterService.getPointsCurrentDiscordPoints())));
         messageService.send(sender,
                 "<gray>  started=<white><started></white>, duration=<white><duration></white>, ends=<white><ends></white>, remaining=<white><remaining></white></gray>",
                 MessageService.value("started", formatTimestamp(state.startedAtEpochMillis())),
@@ -761,7 +882,7 @@ public final class RateCommand implements TabExecutor {
 
     private void sendRawBoosterState(CommandSender sender, BoosterState state) {
         messageService.send(sender,
-                "<yellow><type></yellow><gray>: active=<white><active></white>, rate=<white><rate></white>, startedAt=<white><started></white>, durationMillis=<white><duration></white>, endsAt=<white><ends></white>, announce=<white><announce></white>, jobsTarget=<white><target></white>, jobsScope=<white><scope></white></gray>",
+                "<yellow><type></yellow><gray>: active=<white><active></white>, rate=<white><rate></white>, started_at=<white><started></white>, duration_millis=<white><duration></white>, ends_at=<white><ends></white>, announce=<white><announce></white>, jobs_target=<white><target></white>, jobs_scope=<white><scope></white></gray>",
                 MessageService.value("type", state.type().displayName()),
                 MessageService.value("active", String.valueOf(state.active())),
                 MessageService.value("rate", NumberUtil.formatRate(state.rate())),
@@ -774,7 +895,7 @@ public final class RateCommand implements TabExecutor {
     }
 
     private void sendDebugSynopsis(CommandSender sender) {
-        messageService.prefixed(sender, "<gray>Usage: <yellow>/rate debug [summary|reference|commands|permissions|placeholders|integrations|state|raw|config|logs|clean logs|cleanlogs]</yellow></gray>");
+        messageService.prefixed(sender, "<gray>Usage: <yellow>/rate debug [summary|reference|commands|permissions|placeholders|integrations|state|raw|config|toggle|all|logs|clean logs|cleanlogs]</yellow></gray>");
     }
 
     private boolean hasViewPermission(CommandSender sender) {
@@ -857,6 +978,90 @@ public final class RateCommand implements TabExecutor {
 
     private String locale(String path, String fallback) {
         return localeService.get(path, fallback);
+    }
+
+    private List<String> configDebugPaths() {
+        return List.of(
+                "locale.file",
+                "restore.delayTicks",
+                "features.mcmmo.enabled",
+                "features.jobs.enabled",
+                "features.points.enabled",
+                "features.points.visible",
+                "features.points.experimental",
+                "display.sections.mcmmo",
+                "display.sections.jobs",
+                "display.sections.points",
+                "display.labels.mcmmo",
+                "display.labels.jobs",
+                "display.labels.points",
+                "display.adminShowExperimentalIntegrations",
+                "tabCompletion.commonDurations",
+                "tabCompletion.commonRates",
+                "logging.auditToConsole",
+                "logging.recentActionLimit",
+                "broadcasts.start.global",
+                "broadcasts.start.mcmmo",
+                "broadcasts.start.jobs",
+                "broadcasts.start.points",
+                "broadcasts.stop.global",
+                "broadcasts.stop.mcmmo",
+                "broadcasts.stop.jobs",
+                "broadcasts.stop.points",
+                "mcmmo.announceOnRateStart",
+                "mcmmo.announceOnRestore",
+                "points.pluginName",
+                "points.configFile",
+                "points.reloadCommand",
+                "points.ingamePath",
+                "points.discordPath",
+                "points.baseIngamePoints",
+                "points.baseDiscordPoints",
+                "commandHooks.start.global",
+                "commandHooks.start.mcmmo",
+                "commandHooks.start.jobs",
+                "commandHooks.start.points",
+                "commandHooks.stop.global",
+                "commandHooks.stop.mcmmo",
+                "commandHooks.stop.jobs",
+                "commandHooks.stop.points"
+        );
+    }
+
+    private List<String> toggleableConfigPaths() {
+        return List.of(
+                "features.mcmmo.enabled",
+                "features.jobs.enabled",
+                "features.points.enabled",
+                "features.points.visible",
+                "features.points.experimental",
+                "display.sections.mcmmo",
+                "display.sections.jobs",
+                "display.sections.points",
+                "display.adminShowExperimentalIntegrations",
+                "logging.auditToConsole",
+                "mcmmo.announceOnRateStart",
+                "mcmmo.announceOnRestore"
+        );
+    }
+
+    private void sendConfigSectionHeader(CommandSender sender, String title) {
+        messageService.send(sender, "<yellow>" + title + "</yellow><gray>:</gray>");
+    }
+
+    private void sendConfigEntry(CommandSender sender, String path) {
+        Object value = plugin.getConfig().get(path);
+        sendClickableDebugEntry(sender, path, formatConfigValue(value), "Click to copy the config key");
+    }
+
+    private String formatConfigValue(Object value) {
+        if (value == null) {
+            return "null";
+        }
+        if (value instanceof List<?> list) {
+            return list.isEmpty() ? "[]" : list.toString();
+        }
+        return String.valueOf(value);
     }
 
     private List<String> configuredDurations() {

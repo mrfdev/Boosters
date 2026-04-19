@@ -3,7 +3,7 @@
 `Boosters` is a helper plugin for 1MoreBlock.com that tracks server-wide boosters from [mcMMO](https://github.com/mcMMO-Dev/mcMMO), [Jobs Reborn](https://github.com/Zrips/Jobs), and an experimental points integration for `PyroWelcomesPro`, restores tracked boosters after restart, and gives players a clean `/rate` command to check the current status.
 
 Version: `1.2.4`  
-Build: `029`  
+Build: `032`  
 Updated: `2026-04-19`
 
 ## What it does
@@ -23,7 +23,7 @@ Updated: `2026-04-19`
 - Built with Java `25`.
 - Compiled against the Paper API for `1.21.11`.
 - Intended for Paper `1.21.11` and newer Paper `26.x` servers that are running on Java `25`.
-- The built jar is named `1MB-Boosters-v1.2.4-029-j25-1.21.11.jar`.
+- The built jar is named `1MB-Boosters-v1.2.4-032-j25-1.21.11.jar`.
 - The plugin data folder is `plugins/1MB-Boosters/`.
 
 If you run this exact build on a server that still uses Java `21`, the plugin will not load because the bytecode target is Java `25`.
@@ -95,11 +95,15 @@ When `features.points.visible: false`, `points` is also excluded from `/rate sta
 - `/rate debug raw`
   Shows raw stored values and important file paths.
 - `/rate debug config`
-  Shows important config keys.
+  Shows an expanded grouped config summary.
 - `/rate debug config <path>`
   Reads a config value.
 - `/rate debug config <path> <value>`
   Sets a simple config value and reloads this plugin.
+- `/rate debug toggle <path> [true|false]`
+  Flips a boolean true/false config setting, or explicitly sets it if you provide `true` or `false`, then reloads this plugin.
+- `/rate debug all`
+  Console-only full debug dump with summary, reference, integrations, state, raw, config, and logs.
 - `/rate debug logs`
   Shows recent audit log entries.
 - `/rate debug clean logs`
@@ -122,7 +126,10 @@ If `/rate start` or `/rate stop` is used without enough arguments, the plugin sh
 - `/rate debug`
 - `/rate debug reference`
 - `/rate debug raw`
+- `/rate debug all`
 - `/rate debug config features.points.visible true`
+- `/rate debug toggle features.points.visible`
+- `/rate debug toggle features.points.visible true`
 - `/rate debug logs`
 - `/rate debug clean logs`
 
@@ -244,7 +251,7 @@ If you upgrade from an older release that used `plugins/Boosters/` or `plugins/b
 
 - Gradle targets Java `25`.
 - The plugin is compiled against `io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT`.
-- Current release metadata: version `1.2.4`, build `029`.
+- Current release metadata: version `1.2.4`, build `032`.
 - PlaceholderAPI support is optional.
 
 ## Credits
