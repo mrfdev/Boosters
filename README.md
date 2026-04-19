@@ -79,11 +79,11 @@ Internally, that runs `/jobs boost all all <time> <rate>`.
 ### Admin commands
 
 - `/rate start <mcmmo|jobs|all> <time> <rate>`
-  Starts tracked boosters. `all` starts the same timed/rated booster for both mcMMO and Jobs. For mcMMO this creates a timed booster managed by Boosters. For Jobs this starts a global all/all booster.
+  Starts tracked boosters. `all` starts the same timed/rated booster for both mcMMO and Jobs. For mcMMO this creates a timed booster managed by Boosters. For Jobs this starts a global all/all booster. If a booster for that type is already active, Boosters refuses to overwrite it and tells you to stop it first.
 - `/rate stop <mcmmo|jobs|all>`
   Stops one tracked booster or both.
 - `/rate debug [1|2]`
-  Shows plugin diagnostics in two pages. Page 1 covers build info, runtime info, dependencies, and tracked booster state. Page 2 covers commands, permission nodes, and PlaceholderAPI placeholders.
+  Shows plugin diagnostics in two pages. Page 1 covers build info, runtime info, dependencies, and tracked booster state. Page 2 covers commands, permission nodes, and PlaceholderAPI placeholders. The permission nodes and placeholders on page 2 are clickable so they can be copied into chat easily.
 
 If `/rate start` or `/rate stop` is used without enough arguments, the plugin shows the correct command synopsis.
 

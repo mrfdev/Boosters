@@ -150,6 +150,14 @@ public final class RateCommand implements TabExecutor {
         }
 
         BoosterType type = optionalType.get();
+        if (boosterService.getState(type).active()) {
+            messageService.prefixed(sender,
+                    "<red>There is already a tracked <yellow><booster></yellow> booster active.</red> <gray>Stop it first with <yellow><command></yellow>.</gray>",
+                    MessageService.value("booster", type.displayName()),
+                    MessageService.value("command", "/rate stop " + type.key()));
+            return true;
+        }
+
         if (!boosterService.isTrackingEnabled(type)) {
             messageService.prefixed(sender,
                     "<red><booster> tracking is disabled in the config.</red>",
@@ -184,6 +192,10 @@ public final class RateCommand implements TabExecutor {
         List<String> skippedBoosters = new ArrayList<>();
 
         for (BoosterType type : BoosterType.values()) {
+            if (boosterService.getState(type).active()) {
+                skippedBoosters.add(type.displayName() + " (already active, stop it first)");
+                continue;
+            }
             if (!boosterService.isTrackingEnabled(type)) {
                 skippedBoosters.add(type.displayName() + " (tracking disabled)");
                 continue;
@@ -432,19 +444,52 @@ public final class RateCommand implements TabExecutor {
         messageService.send(sender, "<white>/rate debug [1|2]</white><gray> - Show plugin diagnostics.</gray>");
 
         messageService.send(sender, "<yellow>Permission nodes</yellow><gray>:</gray>");
-        messageService.send(sender, "<white>onemb.boosters.rate</white><gray> - Allows players to use <yellow>/rate</yellow>.</gray>");
-        messageService.send(sender, "<white>onemb.boosters.admin</white><gray> - Allows staff to use <yellow>/rate start</yellow> and <yellow>/rate stop</yellow>.</gray>");
-        messageService.send(sender, "<white>onemb.boosters.debug</white><gray> - Allows staff to use <yellow>/rate debug</yellow>.</gray>");
+        sendClickableDebugEntry(sender,
+                "onemb.boosters.rate",
+                "Allows players to use /rate.",
+                "Click to copy this permission node");
+        sendClickableDebugEntry(sender,
+                "onemb.boosters.admin",
+                "Allows staff to use /rate start and /rate stop.",
+                "Click to copy this permission node");
+        sendClickableDebugEntry(sender,
+                "onemb.boosters.debug",
+                "Allows staff to use /rate debug.",
+                "Click to copy this permission node");
 
         messageService.send(sender, "<yellow>PlaceholderAPI placeholders</yellow><gray>:</gray>");
-        messageService.send(sender, "<white>%onemb_boosters_mcmmo_active%</white><gray> - Returns <yellow>Yes</yellow> or <yellow>No</yellow>.</gray>");
-        messageService.send(sender, "<white>%onemb_boosters_mcmmo_rate%</white><gray> - Returns the tracked mcMMO rate, such as <yellow>2</yellow> or <yellow>2.5</yellow>.</gray>");
-        messageService.send(sender, "<white>%onemb_boosters_mcmmo_time%</white><gray> - Returns the original tracked mcMMO duration, or <yellow>Manual</yellow> for a direct native <yellow>/xprate</yellow>.</gray>");
-        messageService.send(sender, "<white>%onemb_boosters_mcmmo_timeleft%</white><gray> - Returns the remaining tracked mcMMO time, or <yellow>Manual</yellow> for a direct native <yellow>/xprate</yellow>.</gray>");
-        messageService.send(sender, "<white>%onemb_boosters_jobs_active%</white><gray> - Returns <yellow>Yes</yellow> or <yellow>No</yellow>.</gray>");
-        messageService.send(sender, "<white>%onemb_boosters_jobs_rate%</white><gray> - Returns the tracked Jobs rate, such as <yellow>2</yellow> or <yellow>2.5</yellow>.</gray>");
-        messageService.send(sender, "<white>%onemb_boosters_jobs_time%</white><gray> - Returns the original tracked Jobs duration.</gray>");
-        messageService.send(sender, "<white>%onemb_boosters_jobs_timeleft%</white><gray> - Returns the remaining tracked Jobs time.</gray>");
+        sendClickableDebugEntry(sender,
+                "%onemb_boosters_mcmmo_active%",
+                "Returns Yes or No.",
+                "Click to copy this placeholder");
+        sendClickableDebugEntry(sender,
+                "%onemb_boosters_mcmmo_rate%",
+                "Returns the tracked mcMMO rate, such as 2 or 2.5.",
+                "Click to copy this placeholder");
+        sendClickableDebugEntry(sender,
+                "%onemb_boosters_mcmmo_time%",
+                "Returns the original tracked mcMMO duration, or Manual for a direct native /xprate.",
+                "Click to copy this placeholder");
+        sendClickableDebugEntry(sender,
+                "%onemb_boosters_mcmmo_timeleft%",
+                "Returns the remaining tracked mcMMO time, or Manual for a direct native /xprate.",
+                "Click to copy this placeholder");
+        sendClickableDebugEntry(sender,
+                "%onemb_boosters_jobs_active%",
+                "Returns Yes or No.",
+                "Click to copy this placeholder");
+        sendClickableDebugEntry(sender,
+                "%onemb_boosters_jobs_rate%",
+                "Returns the tracked Jobs rate, such as 2 or 2.5.",
+                "Click to copy this placeholder");
+        sendClickableDebugEntry(sender,
+                "%onemb_boosters_jobs_time%",
+                "Returns the original tracked Jobs duration.",
+                "Click to copy this placeholder");
+        sendClickableDebugEntry(sender,
+                "%onemb_boosters_jobs_timeleft%",
+                "Returns the remaining tracked Jobs time.",
+                "Click to copy this placeholder");
         messageService.send(sender, "<gray>Inactive boosters return <yellow>1</yellow> for rate and <yellow>None</yellow> for time values.</gray>");
         messageService.send(sender, "<gray>Use <yellow>/rate debug 1</yellow> for build, runtime, dependencies, and tracked state.</gray>");
     }
@@ -508,6 +553,15 @@ public final class RateCommand implements TabExecutor {
         return sender.isOp()
                 || sender.hasPermission("onemb.boosters.debug")
                 || sender.hasPermission("onemb.boosters.admin");
+    }
+
+    private void sendClickableDebugEntry(CommandSender sender, String value, String description, String hoverText) {
+        String escapedValue = value.replace("\\", "\\\\").replace("'", "\\'");
+        String escapedDescription = description.replace("\\", "\\\\").replace("'", "\\'");
+        String escapedHover = hoverText.replace("\\", "\\\\").replace("'", "\\'");
+        messageService.send(sender,
+                "<click:suggest_command:'" + escapedValue + "'><hover:show_text:'<gray>" + escapedHover + "</gray>'><white>"
+                        + escapedValue + "</white></hover></click><gray> - " + escapedDescription + "</gray>");
     }
 
     private List<String> partialMatches(String token, List<String> options) {
