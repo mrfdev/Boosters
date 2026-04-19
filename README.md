@@ -48,4 +48,4 @@ And some suggestions from [zrips](https://github.com/zrips/) to help with improv
 
 ## Version
 
-[Tested build](https://github.com/mrfdev/Boosters/releases) Version 1.1.0, for Paper 1.21.10/11 (java25). Last updated: January 1st 2026.
+[Tested build](https://github.com/mrfdev/Boosters/releases) Version 1.1.0, for Paper 1.21.10/11 (java25). Last updated: January 1st 2026. 
