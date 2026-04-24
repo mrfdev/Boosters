@@ -1,9 +1,13 @@
 package com.mrfdev.boosters.util;
 
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 
 public final class LocaleService {
 
@@ -38,7 +42,7 @@ public final class LocaleService {
         }
 
         activeLocaleFile = requested;
-        localeConfig = YamlConfiguration.loadConfiguration(localeFile);
+        localeConfig = loadYaml(localeFile);
     }
 
     public String get(String path, String fallback) {
@@ -61,5 +65,19 @@ public final class LocaleService {
         if (!file.exists()) {
             plugin.saveResource(resourceName, false);
         }
+    }
+
+    private YamlConfiguration loadYaml(File file) {
+        YamlConfiguration yaml = new YamlConfiguration();
+        if (!file.isFile()) {
+            return yaml;
+        }
+
+        try {
+            yaml.loadFromString(Files.readString(file.toPath(), StandardCharsets.UTF_8));
+        } catch (IOException | InvalidConfigurationException exception) {
+            plugin.getLogger().warning("Could not read " + file.getName() + ": " + exception.getMessage());
+        }
+        return yaml;
     }
 }

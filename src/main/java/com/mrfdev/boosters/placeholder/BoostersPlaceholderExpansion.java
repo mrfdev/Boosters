@@ -32,13 +32,13 @@ public final class BoostersPlaceholderExpansion extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getAuthor() {
-        List<String> authors = plugin.getDescription().getAuthors();
+        List<String> authors = plugin.getPluginMeta().getAuthors();
         return authors.isEmpty() ? "mrfloris" : String.join(", ", authors);
     }
 
     @Override
     public @NotNull String getVersion() {
-        return plugin.getDescription().getVersion();
+        return plugin.getPluginMeta().getVersion();
     }
 
     @Override

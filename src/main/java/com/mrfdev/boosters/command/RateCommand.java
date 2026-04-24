@@ -1096,7 +1096,7 @@ public final class RateCommand implements TabExecutor {
             return "not installed";
         }
         return pluginDependency.isEnabled()
-                ? "enabled (" + pluginDependency.getDescription().getVersion() + ")"
+                ? "enabled (" + pluginDependency.getPluginMeta().getVersion() + ")"
                 : "installed but disabled";
     }
 

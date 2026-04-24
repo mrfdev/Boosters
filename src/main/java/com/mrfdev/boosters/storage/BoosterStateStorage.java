@@ -3,12 +3,16 @@ package com.mrfdev.boosters.storage;
 import com.mrfdev.boosters.model.BoosterState;
 import com.mrfdev.boosters.model.BoosterType;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 
 public final class BoosterStateStorage {
@@ -33,7 +37,7 @@ public final class BoosterStateStorage {
             return loaded;
         }
 
-        YamlConfiguration yaml = YamlConfiguration.loadConfiguration(stateFile);
+        YamlConfiguration yaml = loadYaml(stateFile);
         for (BoosterType type : BoosterType.values()) {
             loaded.put(type, readState(yaml.getConfigurationSection(type.key()), type));
         }
@@ -44,10 +48,10 @@ public final class BoosterStateStorage {
         ensureDataFolder();
 
         YamlConfiguration yaml = new YamlConfiguration();
-        yaml.options().header("""
-                Runtime booster state for 1MB Boosters.
-                This file is managed automatically.
-                """);
+        yaml.options().setHeader(List.of(
+                "Runtime booster state for 1MB Boosters.",
+                "This file is managed automatically."
+        ));
 
         for (BoosterType type : BoosterType.values()) {
             BoosterState state = states.getOrDefault(type, BoosterState.inactive(type));
@@ -97,5 +101,19 @@ public final class BoosterStateStorage {
         if (!plugin.getDataFolder().exists() && !plugin.getDataFolder().mkdirs()) {
             plugin.getLogger().warning("Could not create the plugin data folder.");
         }
+    }
+
+    private YamlConfiguration loadYaml(File file) {
+        YamlConfiguration yaml = new YamlConfiguration();
+        if (!file.isFile()) {
+            return yaml;
+        }
+
+        try {
+            yaml.loadFromString(Files.readString(file.toPath(), StandardCharsets.UTF_8));
+        } catch (IOException | InvalidConfigurationException exception) {
+            plugin.getLogger().warning("Could not read " + file.getName() + ": " + exception.getMessage());
+        }
+        return yaml;
     }
 }

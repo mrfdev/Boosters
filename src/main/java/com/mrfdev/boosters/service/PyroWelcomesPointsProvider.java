@@ -1,11 +1,14 @@
 package com.mrfdev.boosters.service;
 
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 
 public final class PyroWelcomesPointsProvider {
 
@@ -74,7 +77,7 @@ public final class PyroWelcomesPointsProvider {
             return fallback;
         }
 
-        YamlConfiguration yaml = YamlConfiguration.loadConfiguration(configFile());
+        YamlConfiguration yaml = loadYaml(configFile());
         return Math.max(0, yaml.getInt(path, fallback));
     }
 
@@ -84,7 +87,7 @@ public final class PyroWelcomesPointsProvider {
             return "PyroWelcomesPro config.yml could not be found.";
         }
 
-        YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
+        YamlConfiguration yaml = loadYaml(file);
         yaml.set(ingamePath(), ingamePoints);
         yaml.set(discordPath(), discordPoints);
 
@@ -105,5 +108,19 @@ public final class PyroWelcomesPointsProvider {
         }
 
         return null;
+    }
+
+    private YamlConfiguration loadYaml(File file) {
+        YamlConfiguration yaml = new YamlConfiguration();
+        if (!file.isFile()) {
+            return yaml;
+        }
+
+        try {
+            yaml.loadFromString(Files.readString(file.toPath(), StandardCharsets.UTF_8));
+        } catch (IOException | InvalidConfigurationException exception) {
+            plugin.getLogger().warning("Could not read " + file.getName() + ": " + exception.getMessage());
+        }
+        return yaml;
     }
 }

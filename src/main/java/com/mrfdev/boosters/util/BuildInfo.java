@@ -28,7 +28,7 @@ public record BuildInfo(
         }
 
         String fallbackName = plugin.getName();
-        String fallbackVersion = plugin.getDescription().getVersion();
+        String fallbackVersion = plugin.getPluginMeta().getVersion();
         String pluginName = properties.getProperty("pluginName", fallbackName);
         String pluginVersion = properties.getProperty("pluginVersion", fallbackVersion);
         String buildNumber = properties.getProperty("buildNumber", "unknown");
