@@ -10,7 +10,9 @@ public record BuildInfo(
         String pluginName,
         String pluginVersion,
         String buildNumber,
-        String targetMinecraftVersion,
+        String compilePaperApiVersion,
+        String declaredApiCompatibilityVersion,
+        String pluginYamlApiVersion,
         String targetJavaVersion,
         String artifactFileName
 ) {
@@ -30,10 +32,12 @@ public record BuildInfo(
         String pluginName = properties.getProperty("pluginName", fallbackName);
         String pluginVersion = properties.getProperty("pluginVersion", fallbackVersion);
         String buildNumber = properties.getProperty("buildNumber", "unknown");
-        String targetMinecraftVersion = properties.getProperty("targetMinecraftVersion", "unknown");
+        String compilePaperApiVersion = properties.getProperty("compilePaperApiVersion", "unknown");
+        String declaredApiCompatibilityVersion = properties.getProperty("declaredApiCompatibilityVersion", "unknown");
+        String pluginYamlApiVersion = properties.getProperty("pluginYamlApiVersion", declaredApiCompatibilityVersion);
         String targetJavaVersion = properties.getProperty("targetJavaVersion", "unknown");
         String artifactFileName = properties.getProperty("artifactFileName", pluginName + "-v" + pluginVersion + ".jar");
 
-        return new BuildInfo(pluginName, pluginVersion, buildNumber, targetMinecraftVersion, targetJavaVersion, artifactFileName);
+        return new BuildInfo(pluginName, pluginVersion, buildNumber, compilePaperApiVersion, declaredApiCompatibilityVersion, pluginYamlApiVersion, targetJavaVersion, artifactFileName);
     }
 }

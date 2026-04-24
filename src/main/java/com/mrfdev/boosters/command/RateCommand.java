@@ -621,8 +621,10 @@ public final class RateCommand implements TabExecutor {
                 MessageService.value("version", buildInfo.pluginVersion()),
                 MessageService.value("build", buildInfo.buildNumber()));
         messageService.send(sender,
-                "<yellow>Targets</yellow><gray>: Minecraft <white><mc></white>, Java <white><java></white></gray>",
-                MessageService.value("mc", buildInfo.targetMinecraftVersion()),
+                "<yellow>Build</yellow><gray>: Paper API <white><paper_api></white>, plugin.yml api-version <white><plugin_api></white>, compatibility floor <white><floor></white>, Java <white><java></white></gray>",
+                MessageService.value("paper_api", buildInfo.compilePaperApiVersion()),
+                MessageService.value("plugin_api", buildInfo.pluginYamlApiVersion()),
+                MessageService.value("floor", buildInfo.declaredApiCompatibilityVersion()),
                 MessageService.value("java", buildInfo.targetJavaVersion()));
         messageService.send(sender,
                 "<yellow>Runtime</yellow><gray>: Server <white><server></white>, Bukkit API <white><api></white>, Java <white><java></white></gray>",

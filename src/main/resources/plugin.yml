@@ -1,7 +1,7 @@
 name: ${pluginName}
 main: com.mrfdev.boosters.Boosters
 version: ${version}
-api-version: '1.21'
+api-version: '${pluginYamlApiVersion}'
 author: mrfloris
 website: https://github.com/mrfdev/Boosters
 description: Track, restore, and schedule mcMMO, Jobs, and experimental points boosters with the /rate command.

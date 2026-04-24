@@ -3,8 +3,8 @@
 `Boosters` is a helper plugin for 1MoreBlock.com that tracks server-wide boosters from [mcMMO](https://github.com/mcMMO-Dev/mcMMO), [Jobs Reborn](https://github.com/Zrips/Jobs), and an experimental points integration for `PyroWelcomesPro`, restores tracked boosters after restart, and gives players a clean `/rate` command to check the current status.
 
 Version: `1.2.4`  
-Build: `032`  
-Updated: `2026-04-19`
+Build: `036`  
+Updated: `2026-04-24`
 
 ## What it does
 
@@ -21,10 +21,12 @@ Updated: `2026-04-19`
 ## Server target
 
 - Built with Java `25`.
-- Compiled against the Paper API for `1.21.11`.
+- Compiled against the Paper API for `26.1.2`.
+- The generated `plugin.yml` declares `api-version: 1.21.11` so the same jar can be tested on Paper `1.21.11` and Paper `26.1.2`.
 - Intended for Paper `1.21.11` and newer Paper `26.x` servers that are running on Java `25`.
-- The built jar is named `1MB-Boosters-v1.2.4-032-j25-1.21.11.jar`.
+- The built jar is named `1MB-Boosters-v1.2.4-036-j25-1.21.11.jar`.
 - The plugin data folder is `plugins/1MB-Boosters/`.
+- Repo-local `/servers/` is not used by this project; testing should go through `/Users/floris/Projects/Codex/servers/run-test-server`.
 
 If you run this exact build on a server that still uses Java `21`, the plugin will not load because the bytecode target is Java `25`.
 
@@ -85,7 +87,7 @@ When `features.points.visible: false`, `points` is also excluded from `/rate sta
 - `/rate reload`
   Reloads this plugin's `config.yml` and locale file.
 - `/rate debug`
-  Shows a summary debug view.
+  Shows a summary debug view with build/runtime information, including the compile Paper API version and declared compatibility floor.
 - `/rate debug reference`
   Shows commands, permissions, and placeholders.
 - `/rate debug integrations`
@@ -250,8 +252,9 @@ If you upgrade from an older release that used `plugins/Boosters/` or `plugins/b
 ## Build notes
 
 - Gradle targets Java `25`.
-- The plugin is compiled against `io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT`.
-- Current release metadata: version `1.2.4`, build `032`.
+- The plugin is compiled against `io.papermc.paper:paper-api:26.1.2.build.+`.
+- The generated `plugin.yml` declares `api-version: 1.21.11`.
+- Current release metadata: version `1.2.4`, build `036`.
 - PlaceholderAPI support is optional.
 
 ## Credits

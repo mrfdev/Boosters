@@ -1,9 +1,11 @@
 val pluginName = "1MB-Boosters"
 val pluginVersion = "1.2.4"
-val buildNumber = "034"
+val buildNumber = "036"
 val targetJavaVersion = 25
-val targetMinecraftVersion = "1.21.11"
-val artifactFileName = "${pluginName}-v${pluginVersion}-${buildNumber}-j${targetJavaVersion}-${targetMinecraftVersion}.jar"
+val compilePaperApiVersion = "26.1.2"
+val declaredApiCompatibilityVersion = "1.21.11"
+val pluginYamlApiVersion = "1.21.11"
+val artifactFileName = "${pluginName}-v${pluginVersion}-${buildNumber}-j${targetJavaVersion}-${declaredApiCompatibilityVersion}.jar"
 
 plugins {
     java
@@ -30,7 +32,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:${targetMinecraftVersion}-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:${compilePaperApiVersion}.build.+")
     compileOnly("me.clip:placeholderapi:2.11.6")
 }
 
@@ -39,9 +41,11 @@ tasks.processResources {
     filesMatching(listOf("plugin.yml", "build-info.properties")) {
         expand(
             "pluginName" to pluginName,
-            "version" to project.version,
+            "version" to pluginVersion,
             "buildNumber" to buildNumber,
-            "targetMinecraftVersion" to targetMinecraftVersion,
+            "compilePaperApiVersion" to compilePaperApiVersion,
+            "declaredApiCompatibilityVersion" to declaredApiCompatibilityVersion,
+            "pluginYamlApiVersion" to pluginYamlApiVersion,
             "targetJavaVersion" to targetJavaVersion,
             "artifactFileName" to artifactFileName
         )
