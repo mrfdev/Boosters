@@ -262,8 +262,10 @@ If you upgrade from an older release that used `plugins/Boosters/` or `plugins/b
 
 ## Credits
 
+- [mrfloris](https://github.com/mrfloris) for the original plugin idea, project direction, testing, and 1MoreBlock server integration
 - [nossr50](https://github.com/nossr50) and the mcMMO team for [mcMMO](https://github.com/mcMMO-Dev/mcMMO)
 - [Zrips](https://github.com/Zrips) for [Jobs Reborn](https://github.com/Zrips/Jobs)
 - [xsmeths](https://github.com/xsmeths) for logic fixes and helpful review on booster output behavior
 - [The456gamer](https://github.com/the456gamer) for additional contributions and improvements
+- [OpenAI](https://openai.com/) for Codex-assisted development, refactoring, documentation updates, and testing support
 - Everyone who helped shape the original idea and later fixes for this plugin
