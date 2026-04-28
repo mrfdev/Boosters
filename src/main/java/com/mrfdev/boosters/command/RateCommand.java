@@ -169,6 +169,11 @@ public final class RateCommand implements TabExecutor {
         }
 
         BoosterType type = optionalType.get();
+        if (type == BoosterType.POINTS) {
+            sendPointsManualControlMessage(sender);
+            return true;
+        }
+
         if (!isBoosterAvailableForCommand(type)) {
             messageService.prefixed(sender,
                     "<red><booster> is disabled for this server.</red>",
@@ -297,6 +302,11 @@ public final class RateCommand implements TabExecutor {
         }
 
         BoosterType type = optionalType.get();
+        if (type == BoosterType.POINTS) {
+            sendPointsManualControlMessage(sender);
+            return true;
+        }
+
         BoosterActionResult result = boosterService.stopBooster(type, senderName(sender));
         if (!result.success()) {
             messageService.prefixed(sender,
@@ -427,6 +437,17 @@ public final class RateCommand implements TabExecutor {
             return;
         }
 
+        if (!state.hasTrackedDuration()) {
+            messageService.send(sender, label + "<gray>: </gray>" + locale("rate.points-active-manual",
+                            "<green>Active</green><gray> at <aqua><rate>x</aqua> from PyroWelcomesPro config. Current values: <aqua><ingame></aqua> in-game (<aqua><ingame_rate>x</aqua>), <aqua><discord></aqua> Discord (<aqua><discord_rate>x</aqua>).</gray>"),
+                    MessageService.value("rate", NumberUtil.formatRate(state.rate())),
+                    MessageService.value("ingame", String.valueOf(boosterService.getPointsCurrentIngamePoints())),
+                    MessageService.value("discord", String.valueOf(boosterService.getPointsCurrentDiscordPoints())),
+                    MessageService.value("ingame_rate", NumberUtil.formatRate(boosterService.getPointsIngameRate())),
+                    MessageService.value("discord_rate", NumberUtil.formatRate(boosterService.getPointsDiscordRate())));
+            return;
+        }
+
         messageService.send(sender, label + "<gray>: </gray>" + locale("rate.points-active-timed",
                         "<green>Active</green><gray> at <aqua><rate>x</aqua> for <aqua><duration></aqua>, <aqua><remaining></aqua> left. Current values: <aqua><ingame></aqua> in-game, <aqua><discord></aqua> Discord.</gray>"),
                 MessageService.value("rate", NumberUtil.formatRate(state.rate())),
@@ -444,9 +465,9 @@ public final class RateCommand implements TabExecutor {
         }
         if (hasAdminPermission(sender)) {
             messageService.send(sender,
-                    "<yellow>/rate start [mcmmo|jobs|points|all] [time] [rate]</yellow><gray> - Start tracked boosters.</gray>");
+                    "<yellow>/rate start [mcmmo|jobs|all] [time] [rate]</yellow><gray> - Start tracked boosters.</gray>");
             messageService.send(sender,
-                    "<yellow>/rate stop [mcmmo|jobs|points|all]</yellow><gray> - Stop tracked boosters.</gray>");
+                    "<yellow>/rate stop [mcmmo|jobs|all]</yellow><gray> - Stop tracked boosters.</gray>");
             messageService.send(sender,
                     "<yellow>/rate reload</yellow><gray> - Reload this plugin's config and locale.</gray>");
         }
@@ -464,7 +485,7 @@ public final class RateCommand implements TabExecutor {
 
         messageService.prefixed(sender, "<gray>About <yellow>1MB-Boosters</yellow>:</gray>");
         messageService.send(sender,
-                "<gray>This plugin tracks and restores <yellow>mcMMO</yellow>, <yellow>Jobs</yellow>, and optional <yellow>Points</yellow> boosters for 1MoreBlock.</gray>");
+                "<gray>This plugin tracks and restores <yellow>mcMMO</yellow> and <yellow>Jobs</yellow> boosters, and detects manual <yellow>Points</yellow> boosts from PyroWelcomesPro config.</gray>");
         messageService.send(sender,
                 "<gray>Use <yellow>/rate</yellow> to view booster status. Staff can use <yellow>/rate start</yellow>, <yellow>/rate stop</yellow>, <yellow>/rate reload</yellow>, and <yellow>/rate debug</yellow>.</gray>");
         messageService.send(sender,
@@ -479,13 +500,22 @@ public final class RateCommand implements TabExecutor {
     }
 
     private void sendStartSynopsis(CommandSender sender) {
-        messageService.prefixed(sender, "<gray>Usage: <yellow>/rate start [mcmmo|jobs|points|all] [time] [rate]</yellow></gray>");
-        messageService.send(sender, "<gray>Examples: <yellow>/rate start mcmmo 1h 2</yellow>, <yellow>/rate start jobs 30m 2.5</yellow>, <yellow>/rate start points 1h 2</yellow>, and <yellow>/rate start all 1h 2</yellow></gray>");
+        messageService.prefixed(sender, "<gray>Usage: <yellow>/rate start [mcmmo|jobs|all] [time] [rate]</yellow></gray>");
+        messageService.send(sender, "<gray>Examples: <yellow>/rate start mcmmo 1h 2</yellow>, <yellow>/rate start jobs 30m 2.5</yellow>, and <yellow>/rate start all 1h 2</yellow></gray>");
+        messageService.send(sender, "<gray>Points are detected from PyroWelcomesPro config.yml for now, so <yellow>/rate start points</yellow> is intentionally skipped.</gray>");
     }
 
     private void sendStopSynopsis(CommandSender sender) {
-        messageService.prefixed(sender, "<gray>Usage: <yellow>/rate stop [mcmmo|jobs|points|all]</yellow></gray>");
-        messageService.send(sender, "<gray>Examples: <yellow>/rate stop mcmmo</yellow>, <yellow>/rate stop points</yellow>, and <yellow>/rate stop all</yellow></gray>");
+        messageService.prefixed(sender, "<gray>Usage: <yellow>/rate stop [mcmmo|jobs|all]</yellow></gray>");
+        messageService.send(sender, "<gray>Examples: <yellow>/rate stop mcmmo</yellow>, <yellow>/rate stop jobs</yellow>, and <yellow>/rate stop all</yellow></gray>");
+        messageService.send(sender, "<gray>Points are manual/read-only until PyroWelcomesPro can reload its config live.</gray>");
+    }
+
+    private void sendPointsManualControlMessage(CommandSender sender) {
+        messageService.prefixed(sender,
+                "<yellow>Points</yellow><gray> boosters are currently read-only/manual.</gray>");
+        messageService.send(sender,
+                "<gray>Boosters detects active Points from PyroWelcomesPro <yellow>config.yml</yellow>, but it will not start, stop, or reload PyroWelcomesPro until that plugin reloads these values correctly.</gray>");
     }
 
     private boolean handleDebug(CommandSender sender, String[] args) {
@@ -693,8 +723,9 @@ public final class RateCommand implements TabExecutor {
         messageService.prefixed(sender, "<gray>Debug commands reference:</gray>");
         messageService.send(sender, "<white>/rate</white><gray> - Show the current booster status.</gray>");
         messageService.send(sender, "<white>/rate info</white><gray> - Show a player-friendly plugin introduction and GitHub URL.</gray>");
-        messageService.send(sender, "<white>/rate start [mcmmo|jobs|points|all] [time] [rate]</white><gray> - Start tracked boosters.</gray>");
-        messageService.send(sender, "<white>/rate stop [mcmmo|jobs|points|all]</white><gray> - Stop tracked boosters.</gray>");
+        messageService.send(sender, "<white>/rate start [mcmmo|jobs|all] [time] [rate]</white><gray> - Start tracked boosters.</gray>");
+        messageService.send(sender, "<white>/rate stop [mcmmo|jobs|all]</white><gray> - Stop tracked boosters.</gray>");
+        messageService.send(sender, "<white>Points</white><gray> - Detected from PyroWelcomesPro config.yml; start/stop are skipped for now.</gray>");
         messageService.send(sender, "<white>/rate reload</white><gray> - Reload this plugin's config and locale.</gray>");
         messageService.send(sender, "<white>/rate debug summary</white><gray> - Show build/runtime summary.</gray>");
         messageService.send(sender, "<white>/rate debug reference</white><gray> - Show commands, permissions, and placeholders.</gray>");
@@ -791,9 +822,9 @@ public final class RateCommand implements TabExecutor {
         sendClickableDebugEntry(sender, "%onembboosters_jobs_time%", "Returns the original tracked Jobs duration.", "Click to copy this placeholder");
         sendClickableDebugEntry(sender, "%onembboosters_jobs_timeleft%", "Returns the remaining tracked Jobs duration.", "Click to copy this placeholder");
         sendClickableDebugEntry(sender, "%onembboosters_points_active%", "Returns Yes or No.", "Click to copy this placeholder");
-        sendClickableDebugEntry(sender, "%onembboosters_points_rate%", "Returns the tracked Points multiplier, or 1 while points are hidden.", "Click to copy this placeholder");
-        sendClickableDebugEntry(sender, "%onembboosters_points_time%", "Returns the original tracked Points duration, or None while points are hidden.", "Click to copy this placeholder");
-        sendClickableDebugEntry(sender, "%onembboosters_points_timeleft%", "Returns the remaining tracked Points duration, or None while points are hidden.", "Click to copy this placeholder");
+        sendClickableDebugEntry(sender, "%onembboosters_points_rate%", "Returns the detected PyroWelcomesPro Points multiplier, or 1 when inactive.", "Click to copy this placeholder");
+        sendClickableDebugEntry(sender, "%onembboosters_points_time%", "Returns Manual for detected Points boosters, or None when inactive.", "Click to copy this placeholder");
+        sendClickableDebugEntry(sender, "%onembboosters_points_timeleft%", "Returns Manual for detected Points boosters, or None when inactive.", "Click to copy this placeholder");
     }
 
     private void sendDebugIntegrations(CommandSender sender) {
@@ -892,13 +923,15 @@ public final class RateCommand implements TabExecutor {
                 MessageService.value("active", String.valueOf(state.active())),
                 MessageService.value("rate", NumberUtil.formatRate(state.rate())));
         messageService.send(sender,
-                "<gray>  config_file=<white><file></white>, reload_command=<white><reload></white>, base=<white><ingame>/<discord></white>, current=<white><current_ingame>/<current_discord></white></gray>",
+                "<gray>  mode=<white>manual config detection</white>, config_file=<white><file></white>, reload_command=<white><reload></white>, base=<white><ingame>/<discord></white>, current=<white><current_ingame>/<current_discord></white>, inferred=<white><ingame_rate>x/<discord_rate>x</white></gray>",
                 MessageService.value("file", boosterService.getPointsConfigFile().getAbsolutePath()),
                 MessageService.value("reload", boosterService.getPointsReloadCommand()),
                 MessageService.value("ingame", String.valueOf(boosterService.getPointsBaseIngamePoints())),
                 MessageService.value("discord", String.valueOf(boosterService.getPointsBaseDiscordPoints())),
                 MessageService.value("current_ingame", String.valueOf(boosterService.getPointsCurrentIngamePoints())),
-                MessageService.value("current_discord", String.valueOf(boosterService.getPointsCurrentDiscordPoints())));
+                MessageService.value("current_discord", String.valueOf(boosterService.getPointsCurrentDiscordPoints())),
+                MessageService.value("ingame_rate", NumberUtil.formatRate(boosterService.getPointsIngameRate())),
+                MessageService.value("discord_rate", NumberUtil.formatRate(boosterService.getPointsDiscordRate())));
         messageService.send(sender,
                 "<gray>  started=<white><started></white>, duration=<white><duration></white>, ends=<white><ends></white>, remaining=<white><remaining></white></gray>",
                 MessageService.value("started", formatTimestamp(state.startedAtEpochMillis())),
@@ -949,11 +982,17 @@ public final class RateCommand implements TabExecutor {
         if (!boosterService.isTrackingEnabled(type)) {
             return false;
         }
-        return boosterService.isFeatureVisible(type) || (hasAdminPermission(sender) && boosterService.shouldShowPointsToAdmins());
+        if (!configSectionVisible(type.key())) {
+            return false;
+        }
+        return boosterService.getState(type).active()
+                || boosterService.isFeatureVisible(type)
+                || boosterService.isPointsConfigPresent()
+                || (hasAdminPermission(sender) && boosterService.shouldShowPointsToAdmins());
     }
 
     private boolean isBoosterAvailableForCommand(BoosterType type) {
-        return type != BoosterType.POINTS || boosterService.isTrackingEnabled(BoosterType.POINTS);
+        return type != BoosterType.POINTS;
     }
 
     private List<String> rootArgumentsFor(CommandSender sender) {
@@ -991,7 +1030,7 @@ public final class RateCommand implements TabExecutor {
         if (!isBoosterAvailableForCommand(type)) {
             return false;
         }
-        return type != BoosterType.POINTS || boosterService.isFeatureVisible(BoosterType.POINTS);
+        return true;
     }
 
     private boolean configSectionVisible(String key) {

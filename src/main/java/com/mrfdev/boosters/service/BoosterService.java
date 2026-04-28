@@ -44,10 +44,17 @@ public final class BoosterService {
         for (BoosterType type : BoosterType.values()) {
             states.putIfAbsent(type, BoosterState.inactive(type));
         }
+        if (states.getOrDefault(BoosterType.POINTS, BoosterState.inactive(BoosterType.POINTS)).active()) {
+            states.put(BoosterType.POINTS, BoosterState.inactive(BoosterType.POINTS));
+            storage.saveStates(states);
+        }
         cleanupExpiredStoredState();
     }
 
     public BoosterState getState(BoosterType type) {
+        if (type == BoosterType.POINTS) {
+            return detectedPointsState();
+        }
         expireIfNeeded(type);
         return states.getOrDefault(type, BoosterState.inactive(type));
     }
@@ -60,7 +67,7 @@ public final class BoosterService {
         if (type != BoosterType.POINTS) {
             return true;
         }
-        return config().getBoolean("features.points.visible", false);
+        return config().getBoolean("features.points.visible", true);
     }
 
     public boolean isExperimental(BoosterType type) {
@@ -86,7 +93,8 @@ public final class BoosterService {
     }
 
     public boolean shouldExposePointsPlaceholders() {
-        return isTrackingEnabled(BoosterType.POINTS) && isFeatureVisible(BoosterType.POINTS);
+        return isTrackingEnabled(BoosterType.POINTS)
+                && (isFeatureVisible(BoosterType.POINTS) || getState(BoosterType.POINTS).active());
     }
 
     public List<String> getRecentActions() {
@@ -137,12 +145,15 @@ public final class BoosterService {
     }
 
     public BoosterActionResult stopBooster(BoosterType type, String senderName) {
+        if (type == BoosterType.POINTS) {
+            return BoosterActionResult.failure(pointsManualControlMessage());
+        }
+
         BoosterState previous = getState(type);
         if (!previous.active()) {
             return BoosterActionResult.failure("There is no tracked " + type.displayName() + " booster to stop.");
         }
 
-        String pointsResetError = null;
         switch (type) {
             case MCMMO -> {
                 if (isDependencyAvailable(type)) {
@@ -154,11 +165,8 @@ public final class BoosterService {
                     dispatchConsole("jobs boost all reset");
                 }
             }
-            case POINTS -> pointsResetError = pointsProvider.resetToBase();
-        }
-
-        if (pointsResetError != null) {
-            return BoosterActionResult.failure(pointsResetError);
+            case POINTS -> {
+            }
         }
 
         clearState(type);
@@ -305,21 +313,7 @@ public final class BoosterService {
     }
 
     private BoosterActionResult startTimedPoints(long durationMillis, double rate, String senderName) {
-        if (!NumberUtil.isWholeNumber(rate)) {
-            return BoosterActionResult.failure("Points boosters only support whole-number multipliers.");
-        }
-
-        int multiplier = (int) rate;
-        String error = pointsProvider.applyMultiplier(multiplier);
-        if (error != null) {
-            return BoosterActionResult.failure(error);
-        }
-
-        BoosterState state = createTimedState(BoosterType.POINTS, rate, durationMillis, false, "", "");
-        setState(state);
-        handleBoosterStarted(BoosterType.POINTS, state, senderName);
-        logAction("Started Points booster at " + multiplier + "x for " + DurationUtil.formatFriendlyDuration(durationMillis) + " by " + senderName + ".");
-        return BoosterActionResult.success(state, "Started the tracked Points booster.");
+        return BoosterActionResult.failure(pointsManualControlMessage());
     }
 
     private BoosterState createTimedState(BoosterType type, double rate, long durationMillis, boolean announce,
@@ -384,29 +378,15 @@ public final class BoosterService {
     }
 
     private void restorePoints() {
-        BoosterState state = states.getOrDefault(BoosterType.POINTS, BoosterState.inactive(BoosterType.POINTS));
-        if (!state.active() || !state.hasTrackedDuration()
-                || !isTrackingEnabled(BoosterType.POINTS)
-                || !isDependencyAvailable(BoosterType.POINTS)) {
-            return;
+        if (detectedPointsState().active()) {
+            logAction("Detected active manual Points booster from PyroWelcomesPro config.");
         }
-
-        String error = pointsProvider.applyMultiplier((int) state.rate());
-        if (error != null) {
-            plugin.getLogger().warning("Could not restore tracked Points booster: " + error);
-            logAction("Failed to restore tracked Points booster: " + error);
-            return;
-        }
-
-        scheduleExpiry(state);
-        messageService.info(plugin,
-                "<gray>Restored the tracked <yellow>Points</yellow> booster at <aqua><rate>x</aqua> with <aqua><remaining></aqua> left.</gray>",
-                MessageService.value("rate", NumberUtil.formatRate(state.rate())),
-                MessageService.value("remaining", DurationUtil.formatFriendlyDuration(state.remainingMillis(System.currentTimeMillis()))));
-        logAction("Restored tracked Points booster.");
     }
 
     private void expireIfNeeded(BoosterType type) {
+        if (type == BoosterType.POINTS) {
+            return;
+        }
         BoosterState state = states.getOrDefault(type, BoosterState.inactive(type));
         if (!state.isExpired(System.currentTimeMillis())) {
             return;
@@ -422,12 +402,6 @@ public final class BoosterService {
             case JOBS -> {
             }
             case POINTS -> {
-                String error = pointsProvider.resetToBase();
-                if (error != null) {
-                    plugin.getLogger().warning("Could not reset expired Points booster: " + error);
-                    logAction("Failed to reset expired Points booster: " + error);
-                    canClear = false;
-                }
             }
         }
 
@@ -452,6 +426,41 @@ public final class BoosterService {
         if (changed) {
             storage.saveStates(states);
         }
+    }
+
+    private BoosterState detectedPointsState() {
+        if (!isTrackingEnabled(BoosterType.POINTS) || !pointsProvider.isConfigPresent()) {
+            return BoosterState.inactive(BoosterType.POINTS);
+        }
+
+        PyroWelcomesPointsProvider.DetectedPointsBooster detected = pointsProvider.detectManualBooster();
+        if (!detected.active()) {
+            return BoosterState.inactive(BoosterType.POINTS);
+        }
+
+        return new BoosterState(
+                BoosterType.POINTS,
+                true,
+                detected.rate(),
+                0L,
+                0L,
+                0L,
+                false,
+                "",
+                ""
+        );
+    }
+
+    public double getPointsIngameRate() {
+        return pointsProvider.detectManualBooster().ingameRate();
+    }
+
+    public double getPointsDiscordRate() {
+        return pointsProvider.detectManualBooster().discordRate();
+    }
+
+    public String pointsManualControlMessage() {
+        return "Points boosters are read-only for now. Manually edit PyroWelcomesPro config.yml and restart or reload that plugin when its reload command is fixed.";
     }
 
     private void setState(BoosterState state) {
@@ -642,6 +651,9 @@ public final class BoosterService {
         }
         if (type == BoosterType.POINTS && !pointsProvider.isConfigPresent()) {
             return "config missing";
+        }
+        if (type == BoosterType.POINTS && detectedPointsState().active()) {
+            return "manual active";
         }
         if (type == BoosterType.POINTS && isExperimental(type)) {
             return isFeatureVisible(type) ? "experimental visible" : "experimental hidden";

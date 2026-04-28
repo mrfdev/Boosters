@@ -108,7 +108,7 @@ public final class PluginConfigService {
         changed |= ensureValue(yaml, "features.mcmmo.enabled", true);
         changed |= ensureValue(yaml, "features.jobs.enabled", true);
         changed |= ensureValue(yaml, "features.points.enabled", true);
-        changed |= ensureValue(yaml, "features.points.visible", false);
+        changed |= ensureValue(yaml, "features.points.visible", true);
         changed |= ensureValue(yaml, "features.points.experimental", true);
         changed |= ensureComments(yaml, "features", List.of(
                 "Feature toggles for each supported integration.",
@@ -129,16 +129,17 @@ public final class PluginConfigService {
                 "Expected values: true or false.",
                 "Reload behavior: takes effect after /rate reload or a server restart."
         ));
-        changed |= ensureComments(yaml, "features.points", List.of("Experimental PyroWelcomesPro points integration settings."));
+        changed |= ensureComments(yaml, "features.points", List.of("PyroWelcomesPro points integration settings."));
         changed |= ensureComments(yaml, "features.points.enabled", List.of(
-                "Enables the experimental points integration backend.",
+                "Enables the PyroWelcomesPro points detection backend.",
                 "Default: true",
                 "Expected values: true or false.",
                 "Reload behavior: takes effect after /rate reload or a server restart."
         ));
         changed |= ensureComments(yaml, "features.points.visible", List.of(
-                "Controls whether points appear in normal player /rate output, public placeholders, and start/stop all behavior.",
-                "Default: false",
+                "Controls whether points appear in normal player /rate output and public placeholders.",
+                "Detected active Points boosters are shown to players even if this is false, so /rate does not hide live manual boosts.",
+                "Default: true",
                 "Expected values: true or false.",
                 "Reload behavior: takes effect after /rate reload or a server restart."
         ));
@@ -292,7 +293,8 @@ public final class PluginConfigService {
                 "Reload behavior: takes effect after /rate reload or a server restart."
         ));
         changed |= ensureComments(yaml, "commandHooks.start.points", List.of(
-                "Runs only when a tracked Points booster starts.",
+                "Reserved for future controlled Points booster starts.",
+                "Current behavior: Points boosters are detected from PyroWelcomesPro config.yml only, so this does not run yet.",
                 "Default: []",
                 "Expected values: a YAML list of console command strings.",
                 "Reload behavior: takes effect after /rate reload or a server restart."
@@ -319,7 +321,8 @@ public final class PluginConfigService {
                 "Reload behavior: takes effect after /rate reload or a server restart."
         ));
         changed |= ensureComments(yaml, "commandHooks.stop.points", List.of(
-                "Runs only when a tracked Points booster stops.",
+                "Reserved for future controlled Points booster stops.",
+                "Current behavior: Points boosters are detected from PyroWelcomesPro config.yml only, so this does not run yet.",
                 "Default: []",
                 "Expected values: a YAML list of console command strings.",
                 "Reload behavior: takes effect after /rate reload or a server restart."
@@ -358,7 +361,8 @@ public final class PluginConfigService {
                 "Reload behavior: takes effect after /rate reload or a server restart."
         ));
         changed |= ensureComments(yaml, "broadcasts.start.points", List.of(
-                "Broadcast sent when a tracked Points booster starts.",
+                "Reserved broadcast for future controlled Points booster starts.",
+                "Current behavior: manual Points detection does not fire start broadcasts.",
                 "Default: bundled MiniMessage line.",
                 "Expected values: a single MiniMessage string or blank.",
                 "Reload behavior: takes effect after /rate reload or a server restart."
@@ -383,7 +387,8 @@ public final class PluginConfigService {
                 "Reload behavior: takes effect after /rate reload or a server restart."
         ));
         changed |= ensureComments(yaml, "broadcasts.stop.points", List.of(
-                "Broadcast sent when a tracked Points booster stops.",
+                "Reserved broadcast for future controlled Points booster stops.",
+                "Current behavior: manual Points detection does not fire stop broadcasts.",
                 "Default: bundled MiniMessage line.",
                 "Expected values: a single MiniMessage string or blank.",
                 "Reload behavior: takes effect after /rate reload or a server restart."
@@ -422,7 +427,8 @@ public final class PluginConfigService {
         changed |= ensureValue(yaml, "points.baseDiscordPoints", 1);
         changed |= ensureComments(yaml, "points", List.of(
                 "PyroWelcomesPro points integration settings.",
-                "This integration edits another plugin's config.yml and can run that plugin's reload command.",
+                "Current behavior: read-only/manual detection. Boosters reads PyroWelcomesPro config.yml and infers an active booster when configured points are above the base values.",
+                "Boosters does not write, stop, or reload PyroWelcomesPro while that plugin's reload command does not re-read these values reliably.",
                 "Changes to this section apply after /rate reload or a server restart."
         ));
         changed |= ensureComments(yaml, "points.pluginName", List.of(
@@ -438,7 +444,8 @@ public final class PluginConfigService {
                 "Reload behavior: takes effect after /rate reload or a server restart."
         ));
         changed |= ensureComments(yaml, "points.reloadCommand", List.of(
-                "Console command Boosters runs after writing the points config file.",
+                "Reserved reload command for a future controlled Points mode.",
+                "Current behavior: this is not run because Points detection is read-only/manual.",
                 "Default: welcomes reload",
                 "Expected values: a valid console command string or blank to skip reloading the target plugin.",
                 "Reload behavior: takes effect after /rate reload or a server restart."
@@ -456,13 +463,15 @@ public final class PluginConfigService {
                 "Reload behavior: takes effect after /rate reload or a server restart."
         ));
         changed |= ensureComments(yaml, "points.baseIngamePoints", List.of(
-                "Base in-game welcome points restored when no Points booster is active.",
+                "Base in-game welcome points used to infer manual Points boosters.",
+                "If PyroWelcomesPro's configured value is above this base, /rate reports a Points booster.",
                 "Default: 2",
                 "Expected values: non-negative whole numbers.",
                 "Reload behavior: takes effect after /rate reload or a server restart."
         ));
         changed |= ensureComments(yaml, "points.baseDiscordPoints", List.of(
-                "Base Discord welcome points restored when no Points booster is active.",
+                "Base Discord welcome points used to infer manual Points boosters.",
+                "If PyroWelcomesPro's configured value is above this base, /rate reports a Points booster.",
                 "Default: 1",
                 "Expected values: non-negative whole numbers.",
                 "Reload behavior: takes effect after /rate reload or a server restart."

@@ -7,10 +7,20 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 
 public final class PyroWelcomesPointsProvider {
+
+    public record DetectedPointsBooster(
+            boolean active,
+            double rate,
+            int currentIngamePoints,
+            int currentDiscordPoints,
+            int baseIngamePoints,
+            int baseDiscordPoints,
+            double ingameRate,
+            double discordRate
+    ) {
+    }
 
     private final JavaPlugin plugin;
 
@@ -64,6 +74,28 @@ public final class PyroWelcomesPointsProvider {
         return readCurrentValue(discordPath(), configuredBaseDiscordPoints());
     }
 
+    public DetectedPointsBooster detectManualBooster() {
+        int baseIngame = configuredBaseIngamePoints();
+        int baseDiscord = configuredBaseDiscordPoints();
+        int currentIngame = currentIngamePoints();
+        int currentDiscord = currentDiscordPoints();
+        double ingameRate = inferredRate(currentIngame, baseIngame);
+        double discordRate = inferredRate(currentDiscord, baseDiscord);
+        boolean active = ingameRate > 1.0D || discordRate > 1.0D;
+        double rate = active ? Math.max(ingameRate, discordRate) : 1.0D;
+
+        return new DetectedPointsBooster(
+                active,
+                rate,
+                currentIngame,
+                currentDiscord,
+                baseIngame,
+                baseDiscord,
+                ingameRate,
+                discordRate
+        );
+    }
+
     public String applyMultiplier(int multiplier) {
         return writeValues(configuredBaseIngamePoints() * multiplier, configuredBaseDiscordPoints() * multiplier);
     }
@@ -79,6 +111,13 @@ public final class PyroWelcomesPointsProvider {
 
         YamlConfiguration yaml = loadYaml(configFile());
         return Math.max(0, yaml.getInt(path, fallback));
+    }
+
+    private double inferredRate(int currentValue, int baseValue) {
+        if (baseValue <= 0 || currentValue <= baseValue) {
+            return 1.0D;
+        }
+        return currentValue / (double) baseValue;
     }
 
     private String writeValues(int ingamePoints, int discordPoints) {
@@ -117,7 +156,7 @@ public final class PyroWelcomesPointsProvider {
         }
 
         try {
-            yaml.loadFromString(Files.readString(file.toPath(), StandardCharsets.UTF_8));
+            yaml.load(file);
         } catch (IOException | InvalidConfigurationException exception) {
             plugin.getLogger().warning("Could not read " + file.getName() + ": " + exception.getMessage());
         }

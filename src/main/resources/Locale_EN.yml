@@ -11,5 +11,6 @@ rate:
   active-no-end: "<green>Active</green><gray> at <aqua><rate>x</aqua>. No tracked end time.</gray>"
   active-timed: "<green>Active</green><gray> at <aqua><rate>x</aqua> for <aqua><duration></aqua>, <aqua><remaining></aqua> left.</gray>"
   jobs-active-timed: "<green>Active</green><gray> (<aqua><scope></aqua>) at <aqua><rate>x</aqua> for <aqua><duration></aqua>, <aqua><remaining></aqua> left.</gray>"
+  points-active-manual: "<green>Active</green><gray> at <aqua><rate>x</aqua> from PyroWelcomesPro config. Current values: <aqua><ingame></aqua> in-game (<aqua><ingame_rate>x</aqua>), <aqua><discord></aqua> Discord (<aqua><discord_rate>x</aqua>).</gray>"
   points-active-timed: "<green>Active</green><gray> at <aqua><rate>x</aqua> for <aqua><duration></aqua>, <aqua><remaining></aqua> left. Current values: <aqua><ingame></aqua> in-game, <aqua><discord></aqua> Discord.</gray>"
   hidden-experimental: "<gray>Hidden experimental integration. Admin-only view.</gray>"

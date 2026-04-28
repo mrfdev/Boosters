@@ -11,7 +11,7 @@ features:
     enabled: true
   points:
     enabled: true
-    visible: false
+    visible: true
     experimental: true
 
 display:

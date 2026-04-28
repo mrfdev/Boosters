@@ -1,9 +1,9 @@
 # 1MB Boosters
 
-`Boosters` is a helper plugin for 1MoreBlock.com that tracks server-wide boosters from [mcMMO](https://github.com/mcMMO-Dev/mcMMO), [Jobs Reborn](https://github.com/Zrips/Jobs), and an experimental points integration for `PyroWelcomesPro`, restores tracked boosters after restart, and gives players a clean `/rate` command to check the current status.
+`Boosters` is a helper plugin for 1MoreBlock.com that tracks server-wide boosters from [mcMMO](https://github.com/mcMMO-Dev/mcMMO), [Jobs Reborn](https://github.com/Zrips/Jobs), and a manual-detection points integration for `PyroWelcomesPro`, restores tracked boosters after restart, and gives players a clean `/rate` command to check the current status.
 
-Version: `1.3.0`  
-Build: `042`  
+Version: `1.3.1`  
+Build: `043`  
 Updated: `2026-04-28`
 
 ## What it does
@@ -12,7 +12,7 @@ Updated: `2026-04-28`
 - Tracks native Jobs `/jobs boost ...` commands from players and console.
 - Restores tracked boosters a few seconds after startup.
 - Adds `/rate`, `/rate info`, `/rate start`, `/rate stop`, `/rate reload`, and `/rate debug`.
-- Supports an experimental hidden/admin-visible `points` booster for `PyroWelcomesPro`.
+- Detects manual `points` boosters from `PyroWelcomesPro` config values.
 - Exposes PlaceholderAPI placeholders for mcMMO, Jobs, and points.
 - Uses MiniMessage for plugin output and configurable broadcast messages.
 - Supports configurable console command hooks for booster start and stop events.
@@ -24,7 +24,7 @@ Updated: `2026-04-28`
 - Compiled against the Paper API for `26.1.2`.
 - The generated `plugin.yml` declares `api-version: 1.21.11` so the same jar can be tested on Paper `1.21.11` and Paper `26.1.2`.
 - Intended for Paper `1.21.11` and newer Paper `26.x` servers that are running on Java `25`.
-- The built jar is named `1MB-Boosters-v1.3.0-042-j25-26.1.2.jar`.
+- The built jar is named `1MB-Boosters-v1.3.1-043-j25-26.1.2.jar`.
 - The plugin data folder is `plugins/1MB-Boosters/`.
 - Repo-local `/servers/` is not used by this project; testing should go through `/Users/floris/Projects/Codex/servers/run-test-server`.
 
@@ -52,14 +52,15 @@ Boosters stores the remaining time and restores the Jobs booster after restart.
 
 ### PyroWelcomesPro points
 
-Boosters includes an experimental points integration for `PyroWelcomesPro`.
+Boosters includes a read-only/manual-detection points integration for `PyroWelcomesPro`.
 
-- It edits `plugins/PyroWelcomesPro/config.yml`
-- It updates:
+- It reads `plugins/PyroWelcomesPro/config.yml`
+- It checks:
   - `Settings.EarnablePoints`
   - `Settings.DiscordSRV.EarnablePoints`
-- It runs the configured reload command after saving
-- It tracks the multiplier and time like the other booster types
+- It infers a Points booster when either value is higher than the configured base value
+- It shows that detected booster in `/rate`, `/rate debug`, and PlaceholderAPI output
+- It does not write, stop, or reload PyroWelcomesPro until that plugin reliably reloads these settings live
 
 Current assumptions:
 
@@ -67,8 +68,13 @@ Current assumptions:
 - Base Discord points: `1`
 - Points multipliers must be whole numbers like `2`, `3`, or `4`
 
-By default, points can be hidden from normal players while still being visible to admins in `/rate`, `/rate debug`, and direct admin commands like `/rate start points ...`.
-When `features.points.visible: false`, `points` is also excluded from `/rate start all`, `/rate stop all`, and public PlaceholderAPI output.
+Examples:
+
+- `Settings.EarnablePoints: 4` with base `2` is shown as `2x`.
+- `Settings.DiscordSRV.EarnablePoints: 2` with base `1` is shown as `2x`.
+- If both values are at their base values, `/rate` reports no active Points booster.
+
+`/rate start points` and `/rate stop points` are intentionally skipped for now. If a manual Points booster is active, reset PyroWelcomesPro's values back to the base values and restart/reload that plugin once its reload issue is fixed.
 
 ## Commands
 
@@ -82,9 +88,9 @@ When `features.points.visible: false`, `points` is also excluded from `/rate sta
 
 ### Admin commands
 
-- `/rate start <mcmmo|jobs|points|all> <time> <rate>`
+- `/rate start <mcmmo|jobs|all> <time> <rate>`
   Starts tracked boosters. `all` starts every enabled/admin-available booster using the same time and rate.
-- `/rate stop <mcmmo|jobs|points|all>`
+- `/rate stop <mcmmo|jobs|all>`
   Stops one tracked booster or all tracked boosters.
 - `/rate reload`
   Reloads this plugin's `config.yml` and locale file.
@@ -123,9 +129,9 @@ If `/rate start` or `/rate stop` is used without enough arguments, the plugin sh
 - `/rate info`
 - `/rate start mcmmo 1h 2`
 - `/rate start jobs 30m 2`
-- `/rate start points 1h 2`
 - `/rate start all 1h 2`
-- `/rate stop points`
+- `/rate stop mcmmo`
+- `/rate stop jobs`
 - `/rate stop all`
 - `/rate reload`
 - `/rate debug`
@@ -184,11 +190,11 @@ Boosters registers the PlaceholderAPI identifier `onembboosters`.
 - `%onembboosters_points_active%`
   Returns `Yes` or `No`.
 - `%onembboosters_points_rate%`
-  Returns the tracked points multiplier, or `1` while points are hidden.
+  Returns the detected PyroWelcomesPro points multiplier, or `1` when inactive.
 - `%onembboosters_points_time%`
-  Returns the original tracked points duration, or `None` while points are hidden.
+  Returns `Manual` for detected PyroWelcomesPro points boosters, or `None` when inactive.
 - `%onembboosters_points_timeleft%`
-  Returns the remaining tracked points duration, or `None` while points are hidden.
+  Returns `Manual` for detected PyroWelcomesPro points boosters, or `None` when inactive.
 
 When a booster is not active:
 
@@ -211,7 +217,8 @@ You can run your own console commands whenever a tracked booster starts or stops
 
 - Hook lists live in `config.yml` under `commandHooks.start.*` and `commandHooks.stop.*`
 - `global` runs for every booster type
-- `mcmmo`, `jobs`, and `points` only run for that booster type
+- `mcmmo` and `jobs` only run for that booster type
+- `points` hook lists are reserved for a future controlled Points mode and do not run while Points is read-only/manual-detection
 - Hooks also run for tracked native mcMMO/Jobs commands and when a timed booster expires
 - Commands are sent to the console raw, so the target plugin can handle its own formatting, MiniMessage, hex colors, sounds, bossbars, particles, and so on
 - Leading `/` is optional
@@ -257,7 +264,7 @@ If you upgrade from an older release that used `plugins/Boosters/` or `plugins/b
 - Gradle targets Java `25`.
 - The plugin is compiled against `io.papermc.paper:paper-api:26.1.2.build.+`.
 - The generated `plugin.yml` declares `api-version: 1.21.11`.
-- Current release metadata: version `1.3.0`, build `042`.
+- Current release metadata: version `1.3.1`, build `043`.
 - PlaceholderAPI support is optional.
 
 ## Credits
