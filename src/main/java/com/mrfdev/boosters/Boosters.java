@@ -9,8 +9,10 @@ import com.mrfdev.boosters.storage.BoosterStateStorage;
 import com.mrfdev.boosters.util.BuildInfo;
 import com.mrfdev.boosters.util.LocaleService;
 import com.mrfdev.boosters.util.MessageService;
+import com.mrfdev.boosters.util.PluginConfigService;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
@@ -27,6 +29,7 @@ public final class Boosters extends JavaPlugin {
     private BuildInfo buildInfo;
     private LocaleService localeService;
     private MessageService messageService;
+    private PluginConfigService pluginConfigService;
 
     @Override
     public void onEnable() {
@@ -81,6 +84,38 @@ public final class Boosters extends JavaPlugin {
         if (boosterService != null) {
             boosterService.reloadRuntimeSettings();
         }
+    }
+
+    @Override
+    public void saveDefaultConfig() {
+        if (pluginConfigService == null) {
+            pluginConfigService = new PluginConfigService(this);
+        }
+        pluginConfigService.saveDefaultConfig();
+    }
+
+    @Override
+    public FileConfiguration getConfig() {
+        if (pluginConfigService == null) {
+            pluginConfigService = new PluginConfigService(this);
+        }
+        return pluginConfigService.getConfig();
+    }
+
+    @Override
+    public void reloadConfig() {
+        if (pluginConfigService == null) {
+            pluginConfigService = new PluginConfigService(this);
+        }
+        pluginConfigService.reloadConfig();
+    }
+
+    @Override
+    public void saveConfig() {
+        if (pluginConfigService == null) {
+            pluginConfigService = new PluginConfigService(this);
+        }
+        pluginConfigService.saveConfig();
     }
 
     private void migrateLegacyDataFolder() {
