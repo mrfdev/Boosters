@@ -2,8 +2,8 @@
 
 `Boosters` is a helper plugin for 1MoreBlock.com that tracks server-wide boosters from [mcMMO](https://github.com/mcMMO-Dev/mcMMO), [Jobs Reborn](https://github.com/Zrips/Jobs), and an experimental points integration for `PyroWelcomesPro`, restores tracked boosters after restart, and gives players a clean `/rate` command to check the current status.
 
-Version: `1.2.5`  
-Build: `041`  
+Version: `1.3.0`  
+Build: `042`  
 Updated: `2026-04-28`
 
 ## What it does
@@ -24,7 +24,7 @@ Updated: `2026-04-28`
 - Compiled against the Paper API for `26.1.2`.
 - The generated `plugin.yml` declares `api-version: 1.21.11` so the same jar can be tested on Paper `1.21.11` and Paper `26.1.2`.
 - Intended for Paper `1.21.11` and newer Paper `26.x` servers that are running on Java `25`.
-- The built jar is named `1MB-Boosters-v1.2.5-041-j25-1.21.11.jar`.
+- The built jar is named `1MB-Boosters-v1.3.0-042-j25-26.1.2.jar`.
 - The plugin data folder is `plugins/1MB-Boosters/`.
 - Repo-local `/servers/` is not used by this project; testing should go through `/Users/floris/Projects/Codex/servers/run-test-server`.
 
@@ -257,7 +257,7 @@ If you upgrade from an older release that used `plugins/Boosters/` or `plugins/b
 - Gradle targets Java `25`.
 - The plugin is compiled against `io.papermc.paper:paper-api:26.1.2.build.+`.
 - The generated `plugin.yml` declares `api-version: 1.21.11`.
-- Current release metadata: version `1.2.5`, build `041`.
+- Current release metadata: version `1.3.0`, build `042`.
 - PlaceholderAPI support is optional.
 
 ## Credits

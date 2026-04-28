@@ -1,11 +1,12 @@
 val pluginName = "1MB-Boosters"
-val pluginVersion = "1.2.5"
-val buildNumber = "041"
+val pluginVersion = "1.3.0"
+val buildNumber = "042"
 val targetJavaVersion = 25
 val compilePaperApiVersion = "26.1.2"
 val declaredApiCompatibilityVersion = "1.21.11"
 val pluginYamlApiVersion = "1.21.11"
-val artifactFileName = "${pluginName}-v${pluginVersion}-${buildNumber}-j${targetJavaVersion}-${declaredApiCompatibilityVersion}.jar"
+val artifactTargetVersion = "26.1.2"
+val artifactFileName = "${pluginName}-v${pluginVersion}-${buildNumber}-j${targetJavaVersion}-${artifactTargetVersion}.jar"
 
 plugins {
     java
@@ -46,6 +47,7 @@ tasks.processResources {
             "compilePaperApiVersion" to compilePaperApiVersion,
             "declaredApiCompatibilityVersion" to declaredApiCompatibilityVersion,
             "pluginYamlApiVersion" to pluginYamlApiVersion,
+            "artifactTargetVersion" to artifactTargetVersion,
             "targetJavaVersion" to targetJavaVersion,
             "artifactFileName" to artifactFileName
         )
