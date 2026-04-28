@@ -2,8 +2,8 @@
 
 `Boosters` is a helper plugin for 1MoreBlock.com that tracks server-wide boosters from [mcMMO](https://github.com/mcMMO-Dev/mcMMO), [Jobs Reborn](https://github.com/Zrips/Jobs), and an experimental points integration for `PyroWelcomesPro`, restores tracked boosters after restart, and gives players a clean `/rate` command to check the current status.
 
-Version: `1.2.4`  
-Build: `040`  
+Version: `1.2.5`  
+Build: `041`  
 Updated: `2026-04-28`
 
 ## What it does
@@ -11,7 +11,7 @@ Updated: `2026-04-28`
 - Tracks native mcMMO `/xprate` commands from players and console.
 - Tracks native Jobs `/jobs boost ...` commands from players and console.
 - Restores tracked boosters a few seconds after startup.
-- Adds `/rate`, `/rate start`, `/rate stop`, `/rate reload`, and `/rate debug`.
+- Adds `/rate`, `/rate info`, `/rate start`, `/rate stop`, `/rate reload`, and `/rate debug`.
 - Supports an experimental hidden/admin-visible `points` booster for `PyroWelcomesPro`.
 - Exposes PlaceholderAPI placeholders for mcMMO, Jobs, and points.
 - Uses MiniMessage for plugin output and configurable broadcast messages.
@@ -24,7 +24,7 @@ Updated: `2026-04-28`
 - Compiled against the Paper API for `26.1.2`.
 - The generated `plugin.yml` declares `api-version: 1.21.11` so the same jar can be tested on Paper `1.21.11` and Paper `26.1.2`.
 - Intended for Paper `1.21.11` and newer Paper `26.x` servers that are running on Java `25`.
-- The built jar is named `1MB-Boosters-v1.2.4-040-j25-1.21.11.jar`.
+- The built jar is named `1MB-Boosters-v1.2.5-041-j25-1.21.11.jar`.
 - The plugin data folder is `plugins/1MB-Boosters/`.
 - Repo-local `/servers/` is not used by this project; testing should go through `/Users/floris/Projects/Codex/servers/run-test-server`.
 
@@ -77,6 +77,8 @@ When `features.points.visible: false`, `points` is also excluded from `/rate sta
 - `/rate`
   Shows the current tracked booster status. Experimental points can stay hidden from normal players.
   Players with only `onemb.boosters.rate` do not get admin or debug tab completions.
+- `/rate info`
+  Shows a short introduction to the plugin, the current build information, and a clickable GitHub repository URL.
 
 ### Admin commands
 
@@ -118,6 +120,7 @@ If `/rate start` or `/rate stop` is used without enough arguments, the plugin sh
 ## Command examples
 
 - `/rate`
+- `/rate info`
 - `/rate start mcmmo 1h 2`
 - `/rate start jobs 30m 2`
 - `/rate start points 1h 2`
@@ -254,7 +257,7 @@ If you upgrade from an older release that used `plugins/Boosters/` or `plugins/b
 - Gradle targets Java `25`.
 - The plugin is compiled against `io.papermc.paper:paper-api:26.1.2.build.+`.
 - The generated `plugin.yml` declares `api-version: 1.21.11`.
-- Current release metadata: version `1.2.4`, build `040`.
+- Current release metadata: version `1.2.5`, build `041`.
 - PlaceholderAPI support is optional.
 
 ## Credits

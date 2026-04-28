@@ -60,6 +60,7 @@ public final class RateCommand implements TabExecutor {
 
         String subcommand = args[0].toLowerCase(Locale.ROOT);
         return switch (subcommand) {
+            case "info" -> handleInfo(sender);
             case "start" -> handleStart(sender, args);
             case "stop" -> handleStop(sender, args);
             case "reload" -> handleReload(sender);
@@ -439,6 +440,7 @@ public final class RateCommand implements TabExecutor {
         messageService.prefixed(sender, "<gray>Usage:</gray>");
         if (hasViewPermission(sender)) {
             messageService.send(sender, "<yellow>/rate</yellow><gray> - Show the current booster status.</gray>");
+            messageService.send(sender, "<yellow>/rate info</yellow><gray> - Learn what this plugin does and view the GitHub URL.</gray>");
         }
         if (hasAdminPermission(sender)) {
             messageService.send(sender,
@@ -452,6 +454,28 @@ public final class RateCommand implements TabExecutor {
             messageService.send(sender,
                     "<yellow>/rate debug [summary|reference|raw|placeholders|permissions|config|logs]</yellow><gray> - Show diagnostics.</gray>");
         }
+    }
+
+    private boolean handleInfo(CommandSender sender) {
+        if (!hasViewPermission(sender)) {
+            messageService.prefixed(sender, "<red>You do not have permission to use this command.</red>");
+            return true;
+        }
+
+        messageService.prefixed(sender, "<gray>About <yellow>1MB-Boosters</yellow>:</gray>");
+        messageService.send(sender,
+                "<gray>This plugin tracks and restores <yellow>mcMMO</yellow>, <yellow>Jobs</yellow>, and optional <yellow>Points</yellow> boosters for 1MoreBlock.</gray>");
+        messageService.send(sender,
+                "<gray>Use <yellow>/rate</yellow> to view booster status. Staff can use <yellow>/rate start</yellow>, <yellow>/rate stop</yellow>, <yellow>/rate reload</yellow>, and <yellow>/rate debug</yellow>.</gray>");
+        messageService.send(sender,
+                "<gray>Build: <yellow><version></yellow> build <yellow><build></yellow><gray>, compiled for Paper API <yellow><paper></yellow> with compatibility floor <yellow><floor></yellow>.</gray>",
+                MessageService.value("version", buildInfo.pluginVersion()),
+                MessageService.value("build", buildInfo.buildNumber()),
+                MessageService.value("paper", buildInfo.compilePaperApiVersion()),
+                MessageService.value("floor", buildInfo.declaredApiCompatibilityVersion()));
+        messageService.send(sender,
+                "<click:open_url:'https://github.com/mrfdev/Boosters'><hover:show_text:'<gray>Open the GitHub repository</gray>'><aqua>https://github.com/mrfdev/Boosters</aqua></hover></click>");
+        return true;
     }
 
     private void sendStartSynopsis(CommandSender sender) {
@@ -668,6 +692,7 @@ public final class RateCommand implements TabExecutor {
     private void sendDebugCommands(CommandSender sender) {
         messageService.prefixed(sender, "<gray>Debug commands reference:</gray>");
         messageService.send(sender, "<white>/rate</white><gray> - Show the current booster status.</gray>");
+        messageService.send(sender, "<white>/rate info</white><gray> - Show a player-friendly plugin introduction and GitHub URL.</gray>");
         messageService.send(sender, "<white>/rate start [mcmmo|jobs|points|all] [time] [rate]</white><gray> - Start tracked boosters.</gray>");
         messageService.send(sender, "<white>/rate stop [mcmmo|jobs|points|all]</white><gray> - Stop tracked boosters.</gray>");
         messageService.send(sender, "<white>/rate reload</white><gray> - Reload this plugin's config and locale.</gray>");
@@ -933,6 +958,9 @@ public final class RateCommand implements TabExecutor {
 
     private List<String> rootArgumentsFor(CommandSender sender) {
         List<String> arguments = new ArrayList<>();
+        if (hasViewPermission(sender)) {
+            arguments.add("info");
+        }
         if (hasAdminPermission(sender)) {
             arguments.add("start");
             arguments.add("stop");

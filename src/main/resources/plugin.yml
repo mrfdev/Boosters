@@ -14,8 +14,8 @@ softdepend:
 
 commands:
   rate:
-    description: Show, start, stop, reload, or debug tracked boosters.
-    usage: /rate [start|stop|reload|debug] ...
+    description: Show booster status, view plugin info, or manage tracked boosters.
+    usage: /rate [info|start|stop|reload|debug] ...
 
 permissions:
   onemb.boosters.rate:
