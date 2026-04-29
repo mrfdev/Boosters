@@ -1,3 +1,7 @@
+# Deprecated: Moved to 1MB-CMIAPI
+
+This standalone project is deprecated for now. Boosters has moved into the [1MB-CMIAPI project](https://github.com/mrfdev/1MB-CMIAPI), though this repository is being kept around in case we want to roll back to the standalone version later.
+
 # 1MB Boosters
 
 `Boosters` is a helper plugin for 1MoreBlock.com that tracks server-wide boosters from [mcMMO](https://github.com/mcMMO-Dev/mcMMO), [Jobs Reborn](https://github.com/Zrips/Jobs), and a manual-detection points integration for `PyroWelcomesPro`, restores tracked boosters after restart, and gives players a clean `/rate` command to check the current status.
